@@ -1,0 +1,175 @@
+
+
+
+<div class="container" style="margin-top: 30px;">
+    <div class="page-header" >
+        <h1>{{object.caseName}}
+            <small>
+                <strong>{{object.windowType}}</strong>类型
+                <strong  ng-show="object.haveInner">有内孔</strong>
+                {{object.openNum}}开
+            </small>
+        </h1>
+    </div>
+    <section>
+        <div class="well">
+        <h3>计算下料单</h3>
+        <form>
+
+            <input class="input-small" placeholder="高" ng-model="needObject.height" type="number" required>
+            <input class="input-small" placeholder="宽" ng-model="needObject.width" type="number" required>
+            <input class="input-small" placeholder="内孔高" ng-model="needObject.interHeight" type="number" required  ng-show="object.haveInner">
+            <input class="input-small" placeholder="需要多少个" ng-model="needObject.quantity" type="number" required>
+            <br>
+            <label class="checkbox inline">
+                <input type="checkbox" ng-model="needObject.showWeight"> 显示重量
+            </label>
+            <label class="checkbox inline">
+                <input type="checkbox" ng-model="needObject.showPrice"> 显示成本
+            </label>
+            <a target="_blank" class="btn" ng-href="#/calculate/{{object.id}}/{{needObject.height || 0}}/{{needObject.width || 0}}/{{needObject.interHeight || 0}}/{{needObject.quantity || 0}}/{{needObject.showWeight || false}}/{{needObject.showPrice || false}}">计算</a>
+
+            <button type="button" class="btn" ng-click="needObject = undefined;afterCalculateShow = false;">清空</button>
+
+        </form>
+        </div>
+    </section>
+
+    <section ng-controller="needMaterial">
+        <div class="well">
+        <h3>添加或修改需要的框料</h3>
+        <div class="{{result}}" ng-show="isShow">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>{{msg}}</strong>
+        </div>
+        <form class="form-inline">
+            <input type="hidden" ng-model="willSaveObject.id">
+            <label>选择需要添加的框料</label>
+
+            <select ng-model="willSaveObject.material" ng-options="i.id as i.caseName for i in queueMaterial"></select>
+
+            <input class="input-small" placeholder="需要多少件" ng-model="willSaveObject.quantity" type="number" required><br>
+            <input class="input-small span4" style="margin-top: 5px;" placeholder="每件的计算公式,高：l,宽：w,内孔高：i,开数：k" ng-model="willSaveObject.formula" type="text" required>
+            <button type="submit" class="btn" ng-click="saveObject(willSaveObject)">添加</button>
+            <button type="submit" class="btn" ng-click="updateObject(willSaveObject)">修改</button>
+            <button type="button" class="btn" ng-click="willSaveObject = undefined">清空</button>
+
+        </form>
+        </div>
+        <h3>需要的框料和计算公式</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th ng-repeat="tableHead in queueHead">
+                    {{tableHead}}
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr ng-repeat="item in queue" ng-click="getObject(item)">
+                <td>
+                    <button type="button" class="btn" ng-click="removeObject(item)"><i class="icon-remove"></i>删除</button>
+                    {{item.material | modalCaseName:'myMaterials'}}</td>
+                <td>{{item.quantity}}</td>
+                <td>{{item.formula}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <hr>
+
+    <section ng-controller="needGlass">
+        <div class="well">
+        <h3>添加或修改需要的玻璃</h3>
+        <div class="{{result}}" ng-show="isShow">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>{{msg}}</strong>
+        </div>
+        <form class="form-inline">
+            <input type="hidden" ng-model="willSaveObject.id">
+            <label>选择需要添加的玻璃</label>
+
+            <select ng-model="willSaveObject.glass" ng-options="i.id as i.caseName for i in queueGlass"></select>
+
+            <input class="input-small" placeholder="需要多少块" ng-model="willSaveObject.quantity" type="number" required><br>
+            <input class="input-small span5" style="margin-top: 5px;" placeholder="长的计算公式（每块玻璃）,高：l,宽：w,内孔高：i,开数：k"
+                   ng-model="willSaveObject.lengthFormula" type="text" required> <br>
+            <input class="input-small span5" style="margin-top: 5px;" placeholder="宽的计算公式（每块玻璃）,高：l,宽：w,内孔高：i,开数：k"
+                   ng-model="willSaveObject.widthFormula" type="text" required>
+            <button type="submit" class="btn" ng-click="saveObject(willSaveObject)">添加</button>
+            <button type="submit" class="btn" ng-click="updateObject(willSaveObject)">修改</button>
+            <button type="button" class="btn" ng-click="willSaveObject = undefined">清空</button>
+        </form>
+        </div>
+        <h3>需要的玻璃和计算公式</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th ng-repeat="tableHead in queueHead">
+                    {{tableHead}}
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr ng-repeat="item in queue" ng-click="getObject(item)">
+                <td>
+                    <button type="button" class="btn" ng-click="removeObject(item)"><i class="icon-remove"></i>删除</button>
+                    {{item.glass | modalCaseName:'myGlasss'}}</td>
+                <td>{{item.quantity}}</td>
+                <td>{{item.lengthFormula}}</td>
+                <td>{{item.widthFormula}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+
+    <section ng-controller="needPart">
+        <div class="well">
+            <h3>添加或修改需要的配件</h3>
+            <div class="{{result}}" ng-show="isShow">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>{{msg}}</strong>
+            </div>
+            <form class="form-inline">
+                <input type="hidden" ng-model="willSaveObject.id">
+                <label>选择需要添加的配件</label>
+
+                <select ng-model="willSaveObject.part" ng-options="i.id as i.caseName for i in queuePart"></select><br>
+                <input class="input-small span5" style="margin-top: 5px;" placeholder="个数计算公式,高：l,宽：w,内孔高：i,开数：k"
+                       ng-model="willSaveObject.quantityFormula" type="text" required>
+
+                <button type="submit" class="btn" ng-click="saveObject(willSaveObject)">添加</button>
+                <button type="submit" class="btn" ng-click="updateObject(willSaveObject)">修改</button>
+                <button type="button" class="btn" ng-click="willSaveObject = undefined">清空</button>
+            </form>
+        </div>
+        <h3>需要的配件和计算公式</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th ng-repeat="tableHead in queueHead">
+                    {{tableHead}}
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr ng-repeat="item in queue" ng-click="getObject(item)">
+                <td>
+                    <button type="button" class="btn" ng-click="removeObject(item)"><i class="icon-remove"></i>删除</button>
+                    {{item.part | modalCaseName:'myParts'}}</td>
+                <td>{{item.quantityFormula}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+    
+
+
+
+</div>
+

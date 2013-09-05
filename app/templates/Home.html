@@ -1,0 +1,106 @@
+<header id="overview" class="jumbotron subhead">
+    <div class="container">
+        <h1>浩龙下料管理系统</h1>
+        <p class="lead">本管理系统，为您提供窗型下料单计算功能。而且可以自由配置窗型与框料、玻璃、配件之间的关系。</p>
+    </div>
+</header>
+<div class="container">
+
+
+    <section style="margin-top: 30px;">
+        <div class="well">
+            <h3>计算下料单</h3>
+            <form>
+                <label>请输入需要计算的窗型</label>
+                <select ng-model="needObject.windowModelId" ng-options="i.id as i.caseName for i in queueWindowModel"
+                        ng-change="change(needObject.windowModelId)"></select>
+                <br>
+                <input class="input-small" placeholder="高(mm)" ng-model="needObject.height" type="number" required>
+                <input class="input-small" placeholder="宽(mm)" ng-model="needObject.width" type="number" required>
+                <input class="input-small" placeholder="内孔高(mm)" ng-model="needObject.interHeight" type="number" required ng-show="selectedWindowModel.haveInner">
+                <input class="input-small" placeholder="需要多少个" ng-model="needObject.quantity" type="number" required>
+                <br>
+                <label class="checkbox inline">
+                    <input type="checkbox" ng-model="needObject.showWeight"> 显示重量
+                </label>
+                <label class="checkbox inline">
+                    <input type="checkbox" ng-model="needObject.showPrice"> 显示成本
+                </label>
+
+                <a target="_blank" class="btn"
+                   ng-href="#/calculate/{{needObject.windowModelId || 0}}/{{needObject.height || 0}}/{{needObject.width || 0}}/{{needObject.interHeight || 0}}/{{needObject.quantity || 0}}/{{needObject.showWeight || false}}/{{needObject.showPrice || false}}">
+                    单独计算</a>
+
+                <button type="button" class="btn" ng-click="notNowCalculate(needObject)">暂时记住，等下一次过算</button>
+                <button type="button" class="btn" ng-click="needObject = undefined;">清空</button>
+
+            </form>
+        </div>
+    </section>
+
+
+
+
+    <section class="afterCalculate-section" ng-show="queueNotNowCalculate.length > 0">
+        <hr>
+        <h4>暂时记住的下料单有：</h4>
+        <ul>
+            <li ng-repeat="notNowCalculate in queueNotNowCalculate">
+                <span>{{notNowCalculate.windowModelId | modalCaseName:'myWindowModels'}}：</span>
+                <span class="afterCalculate-result">{{notNowCalculate.height || 0}} X {{notNowCalculate.width || 0}}，{{notNowCalculate.quantity || 0}}</span>
+                <span ng-show="notNowCalculate.interHeight"> 内孔高：{{notNowCalculate.interHeight}}</span>
+                [ <a href=""  ng-click="removeNotNowCalculate($index)">X</a> ]
+            </li>
+        </ul>
+        <button type="button" class="btn" style="margin-left: 300px;" ng-click="calculate(queueNotNowCalculate)">计算全部</button>
+    </section>
+
+
+    <section >
+        <hr>
+        <div ng-repeat="calculated in queueCalculated">
+        <h4>{{calculated.caseName}}</h4>
+        <table class="table table-bordered">
+              <tr>
+                  <th></th>
+                  <th ng-repeat="material in calculated.materialHead">
+                      {{material}}
+                  </th>
+                  <th ng-repeat="glass in calculated.glassHead">
+                      {{glass}}
+                  </th>
+              </tr>
+
+              <tr ng-repeat="item in calculated.calculated">
+                  <td>
+                      <a target="_blank"
+                      ng-href="#/calculate/{{item.needObject.windowModelId || 0}}/{{item.needObject.height || 0}}/{{item.needObject.width || 0}}/{{item.needObject.interHeight || 0}}/{{item.needObject.quantity || 0}}/{{item.needObject.showWeight || false}}/{{item.needObject.showPrice || false}}">
+                        {{item.needObject.height || 0}} X {{item.needObject.width || 0}}，{{item.needObject.quantity || 0}}
+                      </a>
+                  </td>
+                  <td ng-repeat="material in item.materials">
+                      {{material.length}}，{{material.thisQuantity}}
+                  </td>
+                  <td ng-repeat="glass in item.glasss">
+                      {{glass.lengthFormula}} X {{glass.widthFormula}}，{{glass.thisQuantity}}
+                  </td>
+              </tr>
+        </table>
+            <div class="clearfix">
+            <dl class="pull-left" ng-repeat="(id, material) in calculated.materials" style="margin-right: 60px;">
+                <dt>{{id | modalCaseName:'myMaterials'}}</dt>
+                <dd class="inline" ng-repeat="item in material">{{item.needLength}}，{{item.thisQuantity}}
+                    <span ng-show="needObject.showWeight" style="margin-left: 10px;">{{item.weight}}KG</span>
+                    <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
+            </dl>
+            <dl class="pull-left" ng-repeat="(id, glass) in calculated.glasss" style="margin-right: 60px;">
+                <dt>{{id | modalCaseName:'myGlasss'}}</dt>
+                <dd class="inline" ng-repeat="item in glass">{{item.needLength}} X {{item.needWidth}}，{{item.thisQuantity}}
+                    <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
+            </dl>
+            </div>
+            <h3 class="text-right" ng-show="needObject.showPrice" style="margin-left: 10px;">总价：{{calculated.totalPrice | currency:"￥"}}</h3>
+        </div>
+    </section>
+
+</div>

@@ -1,0 +1,51 @@
+<header id="overview" class="jumbotron subhead">
+    <div class="container">
+        <h1>框料管理</h1>
+        <p class="lead">框料为本下料系统的基初数据，在这里您可以添加、修改、删除框料。</p>
+    </div>
+</header>
+<div class="container">
+
+    <h3>添加或修改框料
+
+    </h3>
+    <div class="{{result}}" ng-show="isShow">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>{{msg}}</strong>
+    </div>
+    <form class="form-inline">
+        <input type="hidden" ng-model="willSaveObject.id">
+        <input class="input-small" placeholder="框料名" ng-model="willSaveObject.caseName" type="text" required>
+        <input class="input-small span2" placeholder="每米的重量（Kg/m）" ng-model="willSaveObject.weight" type="number" required>
+        <input class="input-small span2" placeholder="每公斤的单价（￥/Kg）" ng-model="willSaveObject.price" type="number" required>
+        <button type="submit" class="btn" ng-click="saveObject(willSaveObject)">添加</button>
+        <button type="submit" class="btn" ng-click="updateObject(willSaveObject)">修改</button>
+        <button type="button" class="btn" ng-click="willSaveObject = undefined">清空</button>
+
+    </form>
+
+    <h3>已入库的框料列表</h3>
+    <table class="table">
+        <thead>
+        <tr>
+
+            <th ng-repeat="tableHead in queueHead">
+                {{tableHead}}
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="item in queue| filter:willSaveObject.caseName" ng-click="getObject(item)">
+
+            <td>
+                <button type="button" class="btn" ng-click="removeObject(item)"><i class="icon-remove"></i>删除</button>
+                {{item.caseName}}</td>
+            <td>{{item.weight}}</td>
+            <td>{{item.price | currency:"￥"}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+

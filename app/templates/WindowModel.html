@@ -1,0 +1,55 @@
+<header id="overview" class="jumbotron subhead">
+    <div class="container">
+        <h1>窗型管理</h1>
+        <p class="lead">窗型为本下料系统的基初数据，在这里您可以添加、修改、删除窗型。</p>
+    </div>
+</header>
+<div class="container">
+
+    <h3>添加或修改窗型
+
+    </h3>
+    <div class="{{result}}" ng-show="isShow">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>{{msg}}</strong>
+    </div>
+    <form class="form-inline">
+        <input type="hidden" ng-model="willSaveObject.id">
+        <input class="input-small" placeholder="窗型名" ng-model="willSaveObject.caseName" type="text" required>
+        <input class="input-small" placeholder="型号" ng-model="willSaveObject.windowType" type="text" required>
+        <select ng-model="willSaveObject.haveInner">
+            <option value="false">无内孔</option>
+            <option value="true">有内孔</option>
+        </select>
+        <input class="input-small" placeholder="几多开" ng-model="willSaveObject.openNum" type="text" required>
+        <button type="submit" class="btn" ng-click="saveObject(willSaveObject)">添加</button>
+        <button type="submit" class="btn" ng-click="updateObject(willSaveObject)">修改</button>
+        <button type="button" class="btn" ng-click="willSaveObject = undefined">清空</button>
+    </form>
+
+    <h3>已入库的窗型列表</h3>
+    <table class="table">
+        <thead>
+        <tr>
+
+            <th ng-repeat="tableHead in queueHead">
+                {{tableHead}}
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="item in queue| filter:willSaveObject.caseName" ng-click="getObject(item)">
+
+            <td>
+                <button type="button" class="btn" ng-click="removeObject(item)"><i class="icon-remove"></i>删除</button>
+                <a href="#/windowModelDetail/{{item.id}}">{{item.caseName}}</a></td>
+            <td>{{item.windowType}}</td>
+            <td ng-switch on="item.haveInner"><span ng-switch-when="true">有内孔</span><span ng-switch-default>无内孔</span></td>
+            <td>{{item.openNum}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
