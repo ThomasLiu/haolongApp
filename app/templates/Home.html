@@ -1,4 +1,4 @@
-<header id="overview" class="jumbotron subhead">
+﻿<header id="overview" class="jumbotron subhead noprint">
     <div class="container">
         <h1>浩龙下料管理系统</h1>
         <p class="lead">本管理系统，为您提供窗型下料单计算功能。而且可以自由配置窗型与框料、玻璃、配件之间的关系。</p>
@@ -7,7 +7,7 @@
 <div class="container">
 
 
-    <section style="margin-top: 30px;">
+    <section class="noprint" style="margin-top: 30px;">
         <div class="well">
             <h3>计算下料单</h3>
             <form>
@@ -41,7 +41,7 @@
 
 
 
-    <section class="afterCalculate-section" ng-show="queueNotNowCalculate.length > 0">
+    <section class="afterCalculate-section noprint" ng-show="queueNotNowCalculate.length > 0">
         <hr>
         <h4>暂时记住的下料单有：</h4>
         <ul>
@@ -58,6 +58,7 @@
 
     <section >
         <hr>
+	<a class="btn noprint" onclick="window.print();"><i class="icon-print"></i></a>
         <div ng-repeat="calculated in queueCalculated">
         <h4>{{calculated.caseName}}</h4>
         <table class="table table-bordered">
@@ -87,19 +88,46 @@
               </tr>
         </table>
             <div class="clearfix">
-            <dl class="pull-left" ng-repeat="(id, material) in calculated.materials" style="margin-right: 60px;">
+                <dl class="dl-horizontal" ng-repeat="(id, material) in calculated.materials">
+                    <dt>{{id | modalCaseName:'myMaterials'}}</dt>
+                    <dd >
+                        <ul class="inline">
+                            <li ng-repeat="item in material">
+                                <span class="calculated-material">{{item.needLength}}，{{item.thisQuantity}}</span>
+                                <span class="calculated-material-weight" ng-show="needObject.showWeight" style="margin-left: 10px;">{{item.weight | number:3}}KG</span>
+                                <span class="calculated-material-weight" ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span>
+                            </li>
+                        </ul>
+                    </dd>
+                </dl>
+                <dl class="dl-horizontal" ng-repeat="(id, glass) in calculated.glasss">
+                    <dt>{{id | modalCaseName:'myGlasss'}}</dt>
+                    <dd>
+                        <ul class="inline">
+                            <li ng-repeat="item in glass">
+                                <span class="calculated-glass">{{item.needLength}} X {{item.needWidth}}，{{item.thisQuantity}}</span>
+                                <span class="calculated-material-weight" ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span>
+                            </li>
+                        </ul>
+                    </dd>
+                </dl>
+
+
+
+            <!--<dl class="pull-left" ng-repeat="(id, material) in calculated.materials" style="margin-right: 60px;">
                 <dt>{{id | modalCaseName:'myMaterials'}}</dt>
                 <dd class="inline" ng-repeat="item in material">{{item.needLength}}，{{item.thisQuantity}}
-                    <span ng-show="needObject.showWeight" style="margin-left: 10px;">{{item.weight}}KG</span>
+                    <span ng-show="needObject.showWeight" style="margin-left: 10px;">{{item.weight | number:3}}KG</span>
                     <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
             </dl>
             <dl class="pull-left" ng-repeat="(id, glass) in calculated.glasss" style="margin-right: 60px;">
                 <dt>{{id | modalCaseName:'myGlasss'}}</dt>
                 <dd class="inline" ng-repeat="item in glass">{{item.needLength}} X {{item.needWidth}}，{{item.thisQuantity}}
                     <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
-            </dl>
+            </dl>-->
             </div>
-            <h3 class="text-right" ng-show="needObject.showPrice" style="margin-left: 10px;">总价：{{calculated.totalPrice | currency:"￥"}}</h3>
+
+            <h3 class="text-right" style="margin-left: 10px;"><span ng-show="needObject.showWeight" style="margin-right: 50px;">总重：{{calculated.totalWeight | number:3}}KG</span><span ng-show="needObject.showPrice">总价：{{calculated.totalPrice | currency:"￥"}}</span></h3>
         </div>
     </section>
 

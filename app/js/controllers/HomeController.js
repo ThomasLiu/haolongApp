@@ -61,10 +61,13 @@ define(['Console'
             $scope.queueCalculated = {};
 
             $scope.calculate = function(queueNeedCalculates){
-                Console.group("calculate",queueNeedCalculates);
+                Console.group("$scope.calculate",queueNeedCalculates);
                 $scope.queueCalculated = {};
+                Console.debug("queueNeedCalculates.length",queueNeedCalculates.length);
                 for(var i=0;i < queueNeedCalculates.length; i++){
+
                     var needCalculate = queueNeedCalculates[i];
+                    Console.debug("needCalculate",needCalculate);
                     WindowModelService.calculate(needCalculate,function(afterCalculate){
 
                         var calculatedWindowModel =  $scope.queueCalculated['p' + afterCalculate.windowModel.id]
@@ -75,8 +78,13 @@ define(['Console'
                             glassHead:[],
                             materials:{},
                             glasss:{},
-                            totalPrice:0
+                            totalPrice:0,
+				            totalWeight:0
                         };
+
+                        calculatedWindowModel.totalPrice += afterCalculate.totalPrice;
+                        calculatedWindowModel.totalWeight += afterCalculate.totalWeight;
+
                         calculatedWindowModel.calculated.push(afterCalculate);
                         if(calculatedWindowModel.materialHead.length == 0){
                             for(var index = 0; index< afterCalculate.materials.length; index++ ){
@@ -121,14 +129,14 @@ define(['Console'
                             calculatedWindowModel.glasss['p' + afterCalculateGlass.glassId] = calculated;
                         }
 
+
+
                         _.each(calculatedWindowModel.materials, function(valueFirst, keyFirst) {
                             _.each(valueFirst, function(value, key) {
                                 Console.debug("value",value);
                                 MaterialService.getObjectById(value.materialId,function(gotMaterial){
-                                    value.weight = parseInt(gotMaterial.weight || 0)*parseInt(value.needLength || 0)/10;
-                                    value.price =  parseInt(value.weight || 0)*gotMaterial.price;
-
-                                    calculatedWindowModel.totalPrice = parseInt(calculatedWindowModel.totalPrice) + value.price;
+                                    value.weight = parseFloat(gotMaterial.weight || 0)*parseInt(value.needLength || 0)/1000*value.thisQuantity;
+                                    value.price =  parseFloat(value.weight || 0)*parseFloat(gotMaterial.price);
                                 });
                             });
                         });
@@ -136,9 +144,7 @@ define(['Console'
                             _.each(valueFirst, function(value, key) {
                                 Console.debug("value",value);
                                 GlassService.getObjectById(value.glassId,function(gotGlass){
-                                    value.price =  parseInt(value.needLength || 0)*parseInt(value.needWidth || 0)*gotGlass.price/100;
-
-                                    calculatedWindowModel.totalPrice = parseInt(calculatedWindowModel.totalPrice) + value.price;
+                                    value.price =  parseInt(value.needLength || 0)*parseInt(value.needWidth || 0)*parseFloat(gotGlass.price)*value.thisQuantity/1000000;
                                 });
                             });
                         });

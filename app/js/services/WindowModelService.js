@@ -42,6 +42,7 @@ define([
                          ,glasss:[]
                          ,parts:[]
                          ,totalPrice:0
+                         ,totalWeight:0
                      };
                      for(var index = 0; index<needMaterials.length; index++){
                          var needMaterial = needMaterials[index];
@@ -49,8 +50,8 @@ define([
                              if(thisMaterial){
                                  var length = eval(needMaterial.formula);
                                  var thisQuantity = (parseInt(needMaterial.quantity || 1)*quantity);
-                                 var weight = thisQuantity * length * parseInt(thisMaterial.weight || 0) / 10;
-                                 var price = weight * parseInt(thisMaterial.price || 0);
+                                 var weight = thisQuantity * length * parseFloat(thisMaterial.weight || 0) / 1000;
+                                 var price = weight * parseFloat(thisMaterial.price || 0);
 
                                  var material = {
                                      materialId: thisMaterial.id
@@ -62,6 +63,7 @@ define([
                                  };
                                  Console.debug("material", material);
                                  afterCalculate.materials.push(material);
+                                 afterCalculate.totalWeight += weight;
                                  afterCalculate.totalPrice += price;
                              }
                          });
@@ -74,8 +76,8 @@ define([
                                  var lengthFormula = eval(needGlass.lengthFormula);
                                  var widthFormula = eval(needGlass.widthFormula);
                                  var thisQuantity = (parseInt(needGlass.quantity || 1)*quantity);
-                                 var area = thisQuantity*lengthFormula*widthFormula/100;
-                                 var price = area * parseInt(thisGlass.price || 0);
+                                 var area = thisQuantity*lengthFormula*widthFormula/1000000;
+                                 var price = area * parseFloat(thisGlass.price || 0);
 
                                  var glass = {
                                      glassId: thisGlass.id
@@ -98,7 +100,7 @@ define([
                              if(thisPart){
                                  var thisQuantity = eval(needPart.quantityFormula);
                                  var thisQuantity = (parseInt(thisQuantity || 0)*quantity);
-                                 var price = parseInt(thisPart.price || 0) * thisQuantity;
+                                 var price = parseFloat(thisPart.price || 0) * thisQuantity;
 
                                  var part = {
                                      partId: thisPart.id

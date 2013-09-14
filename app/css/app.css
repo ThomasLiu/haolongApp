@@ -398,3 +398,16 @@ body > .navbar .brand {
 .afterCalculate-result{
     width: 120px;
 }
+
+.calculated-material{
+    display: inline-block;
+    width: 70px;
+}
+.calculated-glass{
+    width: 120px;
+    display: inline-block;
+}
+.calculated-material-weight{
+    width: 80px;
+    display: inline-block;
+}

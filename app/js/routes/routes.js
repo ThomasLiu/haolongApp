@@ -1,5 +1,5 @@
 define([
-  ,'text!templates/Part.html'
+  'text!templates/Part.html'
   ,'text!templates/Material.html'
   ,'text!templates/WindowModel.html'
   ,'text!templates/Glass.html'
