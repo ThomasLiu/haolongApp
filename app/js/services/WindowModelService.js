@@ -43,6 +43,9 @@ define([
                          ,parts:[]
                          ,totalPrice:0
                          ,totalWeight:0
+                         ,totalMaterialPrice:0
+                         ,totalGlassPrice:0
+                         ,totalPartPrice:0
                      };
                      for(var index = 0; index<needMaterials.length; index++){
                          var needMaterial = needMaterials[index];
@@ -65,6 +68,7 @@ define([
                                  afterCalculate.materials.push(material);
                                  afterCalculate.totalWeight += weight;
                                  afterCalculate.totalPrice += price;
+                                 afterCalculate.totalMaterialPrice += price;
                              }
                          });
                      }
@@ -90,6 +94,7 @@ define([
                                  Console.debug("glass", glass);
                                  afterCalculate.glasss.push(glass);
                                  afterCalculate.totalPrice += price;
+                                 afterCalculate.totalGlassPrice += price;
                              }
                          });
                      }
@@ -99,7 +104,7 @@ define([
                          PartService.getObjectById(needPart.part, function(thisPart){
                              if(thisPart){
                                  var thisQuantity = eval(needPart.quantityFormula);
-                                 var thisQuantity = (parseInt(thisQuantity || 0)*quantity);
+                                 var thisQuantity = (parseFloat(thisQuantity || 0)*quantity);
                                  var price = parseFloat(thisPart.price || 0) * thisQuantity;
 
                                  var part = {
@@ -112,6 +117,7 @@ define([
                                  Console.debug("part", part);
                                  afterCalculate.parts.push(part);
                                  afterCalculate.totalPrice += price;
+                                 afterCalculate.totalPartPrice += price;
                              }
                          });
                      }

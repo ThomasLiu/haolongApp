@@ -78,12 +78,22 @@ define(['Console'
                             glassHead:[],
                             materials:{},
                             glasss:{},
+                            parts:{},
                             totalPrice:0,
 				            totalWeight:0
+                            ,totalMaterialPrice:0
+                            ,totalGlassPrice:0
+                            ,totalPartPrice:0
+                            ,showMaterial:true
+                            ,showGlass:true
+                            ,showPart:true
                         };
 
                         calculatedWindowModel.totalPrice += afterCalculate.totalPrice;
                         calculatedWindowModel.totalWeight += afterCalculate.totalWeight;
+                        calculatedWindowModel.totalMaterialPrice += afterCalculate.totalMaterialPrice;
+                        calculatedWindowModel.totalGlassPrice += afterCalculate.totalGlassPrice;
+                        calculatedWindowModel.totalPartPrice += afterCalculate.totalPartPrice;
 
                         calculatedWindowModel.calculated.push(afterCalculate);
                         if(calculatedWindowModel.materialHead.length == 0){
@@ -127,6 +137,18 @@ define(['Console'
 
                             calculated[afterCalculateGlass.lengthFormula + 'X' + afterCalculateGlass.widthFormula] = glassArea;
                             calculatedWindowModel.glasss['p' + afterCalculateGlass.glassId] = calculated;
+                        }
+
+                        for(var index = 0; index< afterCalculate.parts.length; index++ ){
+                            var afterCalculatePart = afterCalculate.parts[index];
+                            var calculated = calculatedWindowModel.parts['p' + afterCalculatePart.partId] || {
+                                unit: afterCalculatePart.unit
+                                ,thisQuantity: 0
+                                ,price:0
+                            };
+                            calculated.thisQuantity += parseFloat(afterCalculatePart.thisQuantity || 0);
+                            calculated.price += parseFloat(afterCalculatePart.price || 0);
+                            calculatedWindowModel.parts['p' + afterCalculatePart.partId] = calculated;
                         }
 
 

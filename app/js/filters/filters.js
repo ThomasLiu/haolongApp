@@ -4,13 +4,16 @@ define([
   , 'Underscore'  // lib/underscore/underscore
   // Application Filters
   , 'filters/ModalCaseNameFilter'
-], function (Console,_ , msnf){
+  , 'filters/HomePlaceFilter'
+], function (Console,_ , msnf, hpf){
   "use strict";
   Console.group("Entering Filters module.");
   Console.info("modalCaseName", msnf);
+  Console.info("homePlace", hpf);
 
   var filters = {
        modalCaseName :msnf
+      ,homePlace:hpf
   };
   Console.info("Registered filters: ", filters);
 
