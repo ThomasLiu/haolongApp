@@ -56,9 +56,9 @@
     </section>
 
 
-    <section >
+    <section class="noprint">
         <hr>
-	<a class="btn noprint" onclick="window.print();"><i class="icon-print"></i></a>
+
         <div ng-repeat="calculated in queueCalculated">
         <h4>{{calculated.caseName}}
             <small class="noprint">
@@ -88,14 +88,14 @@
                   <td>
                       <a target="_blank"
                       ng-href="#/calculate/{{item.needObject.windowModelId || 0}}/{{item.needObject.height || 0}}/{{item.needObject.width || 0}}/{{item.needObject.interHeight || 0}}/{{item.needObject.quantity || 0}}/{{item.needObject.showWeight || false}}/{{item.needObject.showPrice || false}}">
-                        {{item.needObject.height || 0}} X {{item.needObject.width || 0}}，{{item.needObject.quantity || 0}}
+                        {{item.needObject.height || 0}} X {{item.needObject.width || 0}} = {{item.needObject.quantity || 0}}
                       </a>
                   </td>
                   <td ng-repeat="material in item.materials" ng-show="calculated.showMaterial">
-                      {{material.length}}，{{material.thisQuantity}}
+                      {{material.length}} = {{material.thisQuantity}}
                   </td>
                   <td ng-repeat="glass in item.glasss" ng-show="calculated.showGlass">
-                      {{glass.lengthFormula}} X {{glass.widthFormula}}，{{glass.thisQuantity}}
+                      {{glass.lengthFormula}} X {{glass.widthFormula}} = {{glass.thisQuantity}}
                   </td>
               </tr>
         </table>
@@ -128,13 +128,13 @@
 
             <dl class="pull-left" ng-repeat="(id, material) in calculated.materials" style="margin-right: 60px;" ng-show="calculated.showMaterial">
                 <dt>{{id | modalCaseName:'myMaterials'}}</dt>
-                <dd class="inline" ng-repeat="item in material">{{item.needLength}}，{{item.thisQuantity}}
+                <dd class="inline" ng-repeat="item in material">{{item.needLength}} = {{item.thisQuantity}}
                     <span ng-show="needObject.showWeight" style="margin-left: 10px;">{{item.weight | number:3}}KG</span>
                     <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
             </dl>
             <dl class="pull-left" ng-repeat="(id, glass) in calculated.glasss" style="margin-right: 60px;" ng-show="calculated.showGlass">
                 <dt>{{id | modalCaseName:'myGlasss'}}</dt>
-                <dd class="inline" ng-repeat="item in glass">{{item.needLength}} X {{item.needWidth}}，{{item.thisQuantity}}
+                <dd class="inline" ng-repeat="item in glass">{{item.needLength}} X {{item.needWidth}} = {{item.thisQuantity}}
                     <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
             </dl>
 
@@ -152,6 +152,36 @@
 
                 <span ng-show="needObject.showPrice">总价：{{calculated | homePlace | currency:"￥"}}</span>
             </h3>
+        </div>
+        <hr>
+    </section>
+
+    <section>
+        <a class="btn noprint" onclick="window.print();"><i class="icon-print"></i></a>
+        <div class="clearfix">
+        <h3>框料单</h3>
+        <dl class="pull-left" ng-repeat="(id, material) in queueCalculatedMaterial" style="margin-right: 60px;">
+            <dt>{{id | modalCaseName:'myMaterials'}}</dt>
+            <dd class="inline" ng-repeat="item in material">{{item.needLength}} = {{item.thisQuantity}} {{item.caseName}}
+                <span ng-show="needObject.showWeight" style="margin-left: 10px;">{{item.weight | number:3}}KG</span>
+                <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
+        </dl>
+        </div>
+        <div class="clearfix">
+        <h3>玻璃单</h3>
+        <dl class="pull-left" ng-repeat="(id, glass) in queueCalculatedGlass" style="margin-right: 60px;">
+            <dt>{{id | modalCaseName:'myGlasss'}}</dt>
+            <dd class="inline" ng-repeat="item in glass">{{item.needLength}} X {{item.needWidth}} = {{item.thisQuantity}}
+                <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
+        </dl>
+        </div>
+        <div class="clearfix">
+        <h3>配件单</h3>
+        <dl class="pull-left" ng-repeat="(id, part) in queueCalculatedPart" style="margin-right: 60px;">
+            <dt>{{id | modalCaseName:'myParts'}}</dt>
+            <dd class="inline">{{part.thisQuantity}}{{part.unit}}
+                <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{part.price | currency:"￥"}}</span></dd>
+        </dl>
         </div>
     </section>
 

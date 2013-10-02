@@ -16,7 +16,7 @@
         <ul>
             <li ng-repeat="material in afterCalculate.materials" class="afterCalculate-material">
                 <span>{{material.caseName}}：</span>
-                <span class="afterCalculate-result">{{material.length}}，{{material.thisQuantity}}</span>
+                <span class="afterCalculate-result">{{material.length}} = {{material.thisQuantity}}</span>
                 <span ng-show="afterCalculate.needObject.showWeight" style="margin-left: 10px;">{{material.weight | number:3}}KG</span>
                 <span ng-show="afterCalculate.needObject.showPrice" style="margin-left: 10px;">{{material.price | currency:"￥"}}</span>
             </li>
@@ -24,7 +24,7 @@
         <ul>
             <li ng-repeat="glass in afterCalculate.glasss" class="afterCalculate-glass">
                 <span>{{glass.caseName}}：</span>
-                <span class="afterCalculate-result">{{glass.lengthFormula}} X {{glass.widthFormula}}，{{glass.thisQuantity}}</span>
+                <span class="afterCalculate-result">{{glass.lengthFormula}} X {{glass.widthFormula}} = {{glass.thisQuantity}}</span>
                 <span ng-show="afterCalculate.needObject.showPrice" style="margin-left: 10px;">{{glass.price | currency:"￥"}}</span>
             </li>
         </ul>

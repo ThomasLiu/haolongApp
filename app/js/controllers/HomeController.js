@@ -63,6 +63,11 @@ define(['Console'
             $scope.calculate = function(queueNeedCalculates){
                 Console.group("$scope.calculate",queueNeedCalculates);
                 $scope.queueCalculated = {};
+
+                $scope.queueCalculatedMaterial = {};
+                $scope.queueCalculatedGlass = {};
+                $scope.queueCalculatedPart = {};
+
                 Console.debug("queueNeedCalculates.length",queueNeedCalculates.length);
                 for(var i=0;i < queueNeedCalculates.length; i++){
 
@@ -111,20 +116,51 @@ define(['Console'
                             var afterCalculateMaterial = afterCalculate.materials[index];
                             var calculated = calculatedWindowModel.materials['p' + afterCalculateMaterial.materialId] || {};
 
+                            var thisCalculatedMaterial = $scope.queueCalculatedMaterial['p' + afterCalculateMaterial.materialId] || {};
+                            Console.debug("afterCalculateMaterial.caseName.indexOf",afterCalculateMaterial.caseName + "," + afterCalculateMaterial.caseName.indexOf('侧') + "," + (afterCalculateMaterial.caseName.length-1));
+                            var thisCalculatedMaterialLength;
+                            if(afterCalculateMaterial.caseName.indexOf('侧') == (afterCalculateMaterial.caseName.length-1) &&
+                                afterCalculate.windowModel.haveInner == 'true'){
+                                var thisCaseName = '(内：' + afterCalculate.needObject.interHeight + ')' + afterCalculate.windowModel.openNum + '开';
+                                thisCalculatedMaterialLength = thisCalculatedMaterial['l' + afterCalculateMaterial.length + 'k' + afterCalculate.windowModel.openNum + 'i' + afterCalculate.needObject.interHeight] || {
+                                    needLength:afterCalculateMaterial.length,
+                                    materialId:afterCalculateMaterial.materialId,
+                                    caseName: thisCaseName
+                                };
+                                thisCalculatedMaterial['l' + afterCalculateMaterial.length + 'k' + afterCalculate.windowModel.openNum + 'i' + afterCalculate.needObject.interHeight] = thisCalculatedMaterialLength;
+                            }else{
+                                thisCalculatedMaterialLength = thisCalculatedMaterial['l' + afterCalculateMaterial.length] || {
+                                    needLength:afterCalculateMaterial.length,
+                                    materialId:afterCalculateMaterial.materialId
+
+                                };
+                                thisCalculatedMaterial['l' + afterCalculateMaterial.length] = thisCalculatedMaterialLength;
+                            }
+
+
                             var materialLength = calculated['l' + afterCalculateMaterial.length] || {
                                 needLength:afterCalculateMaterial.length,
                                 materialId:afterCalculateMaterial.materialId
                             };
 
                             materialLength.thisQuantity = parseInt((materialLength.thisQuantity || '0')) + parseInt(afterCalculateMaterial.thisQuantity);
+                            thisCalculatedMaterialLength.thisQuantity = parseInt((thisCalculatedMaterialLength.thisQuantity || '0')) + parseInt(afterCalculateMaterial.thisQuantity);
 
                             calculated['l' + afterCalculateMaterial.length] = materialLength;
                             calculatedWindowModel.materials['p' + afterCalculateMaterial.materialId] = calculated;
+                            $scope.queueCalculatedMaterial['p' + afterCalculateMaterial.materialId] = thisCalculatedMaterial;
                         }
 
                         for(var index = 0; index< afterCalculate.glasss.length; index++ ){
                             var afterCalculateGlass = afterCalculate.glasss[index];
                             var calculated = calculatedWindowModel.glasss['p' + afterCalculateGlass.glassId] || {};
+                            var thisCalculatedGlass = $scope.queueCalculatedGlass['p' + afterCalculateGlass.glassId] || {};
+                            var thisCalculatedGlassArea = thisCalculatedGlass[afterCalculateGlass.lengthFormula + 'X' + afterCalculateGlass.widthFormula] ||
+                            {
+                                needLength:afterCalculateGlass.lengthFormula,
+                                needWidth:afterCalculateGlass.widthFormula,
+                                glassId:afterCalculateGlass.glassId
+                            };
 
                             var glassArea = calculated[afterCalculateGlass.lengthFormula + 'X' + afterCalculateGlass.widthFormula] ||
                             {
@@ -134,13 +170,22 @@ define(['Console'
                             };
 
                             glassArea.thisQuantity = parseInt((glassArea.thisQuantity || '0')) + parseInt(afterCalculateGlass.thisQuantity);
-
+                            thisCalculatedGlassArea.thisQuantity = parseInt((thisCalculatedGlassArea.thisQuantity || '0')) + parseInt(afterCalculateGlass.thisQuantity);
+                            thisCalculatedGlass[afterCalculateGlass.lengthFormula + 'X' + afterCalculateGlass.widthFormula] = thisCalculatedGlassArea;
                             calculated[afterCalculateGlass.lengthFormula + 'X' + afterCalculateGlass.widthFormula] = glassArea;
                             calculatedWindowModel.glasss['p' + afterCalculateGlass.glassId] = calculated;
+                            $scope.queueCalculatedGlass['p' + afterCalculateGlass.glassId] = thisCalculatedGlass;
                         }
 
                         for(var index = 0; index< afterCalculate.parts.length; index++ ){
                             var afterCalculatePart = afterCalculate.parts[index];
+
+                            var thisCalculatedPart = $scope.queueCalculatedPart['p' + afterCalculatePart.partId] || {
+                                unit: afterCalculatePart.unit
+                                ,thisQuantity: 0
+                                ,price:0
+                            };
+
                             var calculated = calculatedWindowModel.parts['p' + afterCalculatePart.partId] || {
                                 unit: afterCalculatePart.unit
                                 ,thisQuantity: 0
@@ -148,7 +193,12 @@ define(['Console'
                             };
                             calculated.thisQuantity += parseFloat(afterCalculatePart.thisQuantity || 0);
                             calculated.price += parseFloat(afterCalculatePart.price || 0);
+                            thisCalculatedPart.thisQuantity += parseFloat(afterCalculatePart.thisQuantity || 0);
+                            thisCalculatedPart.price += parseFloat(afterCalculatePart.price || 0);
+
                             calculatedWindowModel.parts['p' + afterCalculatePart.partId] = calculated;
+
+                            $scope.queueCalculatedPart['p' + afterCalculatePart.partId] = thisCalculatedPart;
                         }
 
 
@@ -170,12 +220,31 @@ define(['Console'
                                 });
                             });
                         });
+                        _.each($scope.queueCalculatedMaterial, function(valueFirst, keyFirst) {
+                            _.each(valueFirst, function(value, key) {
+                                Console.debug("value",value);
+                                MaterialService.getObjectById(value.materialId,function(gotMaterial){
+                                    value.weight = parseFloat(gotMaterial.weight || 0)*parseInt(value.needLength || 0)/1000*value.thisQuantity;
+                                    value.price =  parseFloat(value.weight || 0)*parseFloat(gotMaterial.price);
+                                });
+                            });
+                        });
+                        _.each($scope.queueCalculatedGlass, function(valueFirst, keyFirst) {
+                            _.each(valueFirst, function(value, key) {
+                                Console.debug("value",value);
+                                GlassService.getObjectById(value.glassId,function(gotGlass){
+                                    value.price =  parseInt(value.needLength || 0)*parseInt(value.needWidth || 0)*parseFloat(gotGlass.price)*value.thisQuantity/1000000;
+                                });
+                            });
+                        });
 
                         $scope.queueCalculated['p' + afterCalculate.windowModel.id] = calculatedWindowModel;
 
 
                     });
+                    Console.debug("queueCalculatedMaterial",$scope.queueCalculatedMaterial);
                 }
+
                 Console.debug("queueCalculated",$scope.queueCalculated);
                 Console.groupEnd();
             }
