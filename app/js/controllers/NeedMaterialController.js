@@ -13,7 +13,7 @@ define(['Console'
         $scope.queueMaterial = MaterialService.queue();
         $scope.queue = NeedMaterialService.queueByWindowModelId($routeParams.windowModelId);
         $scope.queueHead = [
-             '框料名'
+             '铝材名'
             , '需要多少件'
             , '每件的计算公式'
         ];

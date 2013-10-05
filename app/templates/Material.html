@@ -1,12 +1,12 @@
 <header id="overview" class="jumbotron subhead">
     <div class="container">
-        <h1>框料管理</h1>
-        <p class="lead">框料为本下料系统的基初数据，在这里您可以添加、修改、删除框料。</p>
+        <h1>铝材管理</h1>
+        <p class="lead">铝材为本下料系统的基初数据，在这里您可以添加、修改、删除铝材。</p>
     </div>
 </header>
 <div class="container">
 
-    <h3>添加或修改框料
+    <h3>添加或修改铝材
 
     </h3>
     <div class="{{result}}" ng-show="isShow">
@@ -15,7 +15,7 @@
     </div>
     <form class="form-inline">
         <input type="hidden" ng-model="willSaveObject.id">
-        <input class="input-small" placeholder="框料名" ng-model="willSaveObject.caseName" type="text" required>
+        <input class="input-small" placeholder="铝材名" ng-model="willSaveObject.caseName" type="text" required>
         <input class="input-small span2" placeholder="每米的重量（Kg/m）" ng-model="willSaveObject.weight" type="number" required>
         <input class="input-small span2" placeholder="每公斤的单价（￥/Kg）" ng-model="willSaveObject.price" type="number" required>
         <button type="submit" class="btn" ng-click="saveObject(willSaveObject)">添加</button>
@@ -24,7 +24,7 @@
 
     </form>
 
-    <h3>已入库的框料列表</h3>
+    <h3>已入库的铝材列表</h3>
     <table class="table">
         <thead>
         <tr>

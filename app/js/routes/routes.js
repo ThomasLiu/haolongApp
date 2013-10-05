@@ -3,7 +3,8 @@ define([
   ,'text!templates/Material.html'
   ,'text!templates/WindowModel.html'
   ,'text!templates/Glass.html'
-],function(partTemplate,materialTemplate,windowModelTemplate,glassTemplate){
+  ,'text!templates/Ball.html'
+],function(partTemplate,materialTemplate,windowModelTemplate,glassTemplate,ballTemplate){
   return {
     windowModel: {
           title: '窗型管理'
@@ -24,10 +25,16 @@ define([
           , template: partTemplate
       }
     , material: {
-          title: '框料管理'
+          title: '铝材管理'
           , route: '/material'
           , controller: 'material'
           , template: materialTemplate
      }
+    , ball: {
+          title: '订单管理'
+          , route: '/ball'
+          , controller: 'ball'
+          , template: ballTemplate
+    }
   };
 })

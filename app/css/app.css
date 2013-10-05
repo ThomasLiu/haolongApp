@@ -298,8 +298,19 @@ textarea {
         page-break-after: avoid;
     }
     .noprint{display:none}
-}
 
+
+    .table-bordered th, .table-bordered td{
+        border-left: 1px solid #111111;
+    }
+
+    .table th, .table td{
+        border-top: 1px solid #111111;
+    }
+    .table-bordered{
+        border-color: #111111 #111111 #111111 -moz-use-text-color;
+    }
+}
 
 
 

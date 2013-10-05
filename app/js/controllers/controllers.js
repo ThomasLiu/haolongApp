@@ -18,6 +18,7 @@ define([
   , 'controllers/NeedGlassController'
   , 'controllers/NeedPartController'
   , 'controllers/AfterCalculateController'
+  , 'controllers/BallController'
 ], function (Console, _, routes, app
     ,home
     ,part
@@ -28,7 +29,8 @@ define([
     ,needMaterial
     ,needGlass
     ,needPart
-    ,afterCalculate) {
+    ,afterCalculate
+    ,ball) {
   "use strict";
   Console.group("Entering controllers module.");
   Console.info("AppController", app);
@@ -44,6 +46,7 @@ define([
       ,needGlass:needGlass
       ,needPart:needPart
       ,afterCalculate:afterCalculate
+      ,ball:ball
   };
 
 
@@ -71,6 +74,16 @@ define([
                 , title: '浩龙下料管理系统'
             }
         );
+
+        $routeProvider.when(
+            '/ballDetail/:ballId'
+            , {
+                templateUrl: 'templates/Home.html'
+                , controller: home
+                , title: '浩龙下料管理系统'
+            }
+        );
+
 
       $routeProvider.when(
           '/windowModelDetail/:windowModelId'

@@ -1,16 +1,17 @@
 ﻿<header id="overview" class="jumbotron subhead noprint">
     <div class="container">
         <h1>浩龙下料管理系统</h1>
-        <p class="lead">本管理系统，为您提供窗型下料单计算功能。而且可以自由配置窗型与框料、玻璃、配件之间的关系。</p>
+        <p class="lead">本管理系统，为您提供窗型下料单计算功能。而且可以自由配置窗型与铝材、玻璃、配件之间的关系。</p>
     </div>
 </header>
 <div class="container">
-
-
     <section class="noprint" style="margin-top: 30px;">
         <div class="well">
             <h3>计算下料单</h3>
             <form>
+                <input placeholder="客户名" ng-model="newBall.client" type="text" required>
+                <input class="input-small" placeholder="交货日期" ng-model="newBall.delivery" type="text" required>
+                <input class="input-small" placeholder="颜色" ng-model="newBall.colour" type="text" required>
                 <label>请输入需要计算的窗型</label>
                 <select ng-model="needObject.windowModelId" ng-options="i.id as i.caseName for i in queueWindowModel"
                         ng-change="change(needObject.windowModelId)"></select>
@@ -39,112 +40,88 @@
     </section>
 
 
+    <!-- 下料单  -->
 
-
-    <section class="afterCalculate-section noprint" ng-show="queueNotNowCalculate.length > 0">
+    <section class="afterCalculate-section noprint" ng-show="newBall.queueNotNowCalculate.length > 0">
         <hr>
         <h4>暂时记住的下料单有：</h4>
         <ul>
-            <li ng-repeat="notNowCalculate in queueNotNowCalculate">
+            <li ng-repeat="notNowCalculate in newBall.queueNotNowCalculate">
                 <span>{{notNowCalculate.windowModelId | modalCaseName:'myWindowModels'}}：</span>
                 <span class="afterCalculate-result">{{notNowCalculate.height || 0}} X {{notNowCalculate.width || 0}}，{{notNowCalculate.quantity || 0}}</span>
                 <span ng-show="notNowCalculate.interHeight"> 内孔高：{{notNowCalculate.interHeight}}</span>
                 [ <a href=""  ng-click="removeNotNowCalculate($index)">X</a> ]
             </li>
         </ul>
-        <button type="button" class="btn" style="margin-left: 300px;" ng-click="calculate(queueNotNowCalculate)">计算全部</button>
+        <button type="button" class="btn" style="margin-left: 300px;" ng-click="calculate(newBall.queueNotNowCalculate)">计算全部</button>
+        <hr>
     </section>
 
 
-    <section class="noprint">
-        <hr>
-
-        <div ng-repeat="calculated in queueCalculated">
-        <h4>{{calculated.caseName}}
-            <small class="noprint">
-                <label class="checkbox inline">
-                    <input type="checkbox" ng-model="calculated.showMaterial"> 框料
-                </label>
-                <label class="checkbox inline">
-                    <input type="checkbox" ng-model="calculated.showGlass"> 玻璃
-                </label>
-                <label class="checkbox inline">
-                    <input type="checkbox" ng-model="calculated.showPart"> 配件
-                </label>
-            </small>
+    <!-- 计算下料单 所需的全部材料  -->
+    <section ng-class="{noprint: printClientBall}">
+        <h4>{{newBall.client}} <span style="padding-left: 20px;">交货日期：{{newBall.delivery}}</span>
+            <a class="btn noprint" ng-click="printBall(0)"><i class="icon-print"></i></a>
+            <a class="btn noprint pull-right" ng-click="saveBall(newBall)" style="margin-left: 20px;"><i class="icon-star"></i>保存订单</a>
+            <span class="pull-right">{{newBall.createdDate}}</span>
         </h4>
-        <table class="table table-bordered">
-              <tr>
-                  <th></th>
-                  <th ng-repeat="material in calculated.materialHead" ng-show="calculated.showMaterial">
-                      {{material}}
-                  </th>
-                  <th ng-repeat="glass in calculated.glassHead" ng-show="calculated.showGlass">
-                      {{glass}}
-                  </th>
-              </tr>
+        <div ng-repeat="calculated in queueAfterCalculated.queueCalculated">
+            <h4>{{calculated.caseName}}
+                <small class="noprint">
+                    <label class="checkbox inline">
+                        <input type="checkbox" ng-model="calculated.showMaterial"> 铝材
+                    </label>
+                    <label class="checkbox inline">
+                        <input type="checkbox" ng-model="calculated.showGlass"> 玻璃
+                    </label>
+                    <label class="checkbox inline">
+                        <input type="checkbox" ng-model="calculated.showPart"> 配件
+                    </label>
+                </small>
+            </h4>
+            <table class="table table-bordered">
+                <tr>
+                    <th>高 X 宽 <span ng-show="calculated.haveInner">( 内 )</span></th>
+                    <th ng-repeat="material in calculated.materialHead" ng-show="calculated.showMaterial">
+                        {{material}}
+                    </th>
+                    <th ng-repeat="glass in calculated.glassHead" ng-show="calculated.showGlass">
+                        {{glass}}
+                    </th>
+                </tr>
 
-              <tr ng-repeat="item in calculated.calculated">
-                  <td>
-                      <a target="_blank"
-                      ng-href="#/calculate/{{item.needObject.windowModelId || 0}}/{{item.needObject.height || 0}}/{{item.needObject.width || 0}}/{{item.needObject.interHeight || 0}}/{{item.needObject.quantity || 0}}/{{item.needObject.showWeight || false}}/{{item.needObject.showPrice || false}}">
-                        {{item.needObject.height || 0}} X {{item.needObject.width || 0}} = {{item.needObject.quantity || 0}}
-                      </a>
-                  </td>
-                  <td ng-repeat="material in item.materials" ng-show="calculated.showMaterial">
-                      {{material.length}} = {{material.thisQuantity}}
-                  </td>
-                  <td ng-repeat="glass in item.glasss" ng-show="calculated.showGlass">
-                      {{glass.lengthFormula}} X {{glass.widthFormula}} = {{glass.thisQuantity}}
-                  </td>
-              </tr>
-        </table>
-            <div class="clearfix">
-                <!--<dl class="dl-horizontal" ng-repeat="(id, material) in calculated.materials">
+                <tr ng-repeat="item in calculated.calculated">
+                    <td>
+                        <a target="_blank"
+                           ng-href="#/calculate/{{item.needObject.windowModelId || 0}}/{{item.needObject.height || 0}}/{{item.needObject.width || 0}}/{{item.needObject.interHeight || 0}}/{{item.needObject.quantity || 0}}/{{item.needObject.showWeight || false}}/{{item.needObject.showPrice || false}}">
+                            {{item.needObject.height || 0}} X {{item.needObject.width || 0}} = {{item.needObject.quantity || 0}} <span ng-show="calculated.haveInner">( {{item.needObject.interHeight}} )</span>
+                        </a>
+                    </td>
+                    <td ng-repeat="material in item.materials" ng-show="calculated.showMaterial">
+                        {{material.length}} = {{material.thisQuantity}}
+                    </td>
+                    <td ng-repeat="glass in item.glasss" ng-show="calculated.showGlass">
+                        {{glass.lengthFormula}} X {{glass.widthFormula}} = {{glass.thisQuantity}}
+                    </td>
+                </tr>
+            </table>
+            <div class="clearfix noprint">
+                <dl class="pull-left" ng-repeat="(id, material) in calculated.materials" style="margin-right: 60px;" ng-show="calculated.showMaterial">
                     <dt>{{id | modalCaseName:'myMaterials'}}</dt>
-                    <dd >
-                        <ul class="inline">
-                            <li ng-repeat="item in material">
-                                <span class="calculated-material">{{item.needLength}}，{{item.thisQuantity}}</span>
-                                <span class="calculated-material-weight" ng-show="needObject.showWeight" style="margin-left: 10px;">{{item.weight | number:3}}KG</span>
-                                <span class="calculated-material-weight" ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span>
-                            </li>
-                        </ul>
-                    </dd>
+                    <dd class="inline" ng-repeat="item in material">{{item.needLength}} = {{item.thisQuantity}} {{item.caseName}}
+                        <span ng-show="needObject.showWeight" style="margin-left: 10px;">{{item.weight | number:3}}KG</span>
+                        <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
                 </dl>
-                <dl class="dl-horizontal" ng-repeat="(id, glass) in calculated.glasss">
+                <dl class="pull-left" ng-repeat="(id, glass) in calculated.glasss" style="margin-right: 60px;" ng-show="calculated.showGlass">
                     <dt>{{id | modalCaseName:'myGlasss'}}</dt>
-                    <dd>
-                        <ul class="inline">
-                            <li ng-repeat="item in glass">
-                                <span class="calculated-glass">{{item.needLength}} X {{item.needWidth}}，{{item.thisQuantity}}</span>
-                                <span class="calculated-material-weight" ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span>
-                            </li>
-                        </ul>
-                    </dd>
+                    <dd class="inline" ng-repeat="item in glass">{{item.needLength}} X {{item.needWidth}} = {{item.thisQuantity}}
+                        <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
                 </dl>
-                 -->
-
-
-            <dl class="pull-left" ng-repeat="(id, material) in calculated.materials" style="margin-right: 60px;" ng-show="calculated.showMaterial">
-                <dt>{{id | modalCaseName:'myMaterials'}}</dt>
-                <dd class="inline" ng-repeat="item in material">{{item.needLength}} = {{item.thisQuantity}}
-                    <span ng-show="needObject.showWeight" style="margin-left: 10px;">{{item.weight | number:3}}KG</span>
-                    <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
-            </dl>
-            <dl class="pull-left" ng-repeat="(id, glass) in calculated.glasss" style="margin-right: 60px;" ng-show="calculated.showGlass">
-                <dt>{{id | modalCaseName:'myGlasss'}}</dt>
-                <dd class="inline" ng-repeat="item in glass">{{item.needLength}} X {{item.needWidth}} = {{item.thisQuantity}}
-                    <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
-            </dl>
-
-            <dl class="pull-left" ng-repeat="(id, part) in calculated.parts" style="margin-right: 60px;" ng-show="calculated.showPart">
-                <dt>{{id | modalCaseName:'myParts'}}</dt>
-                <dd class="inline">{{part.thisQuantity}}{{part.unit}}
-                    <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{part.price | currency:"￥"}}</span></dd>
-            </dl>    
-                
-                
+                <dl class="pull-left" ng-repeat="(id, part) in calculated.parts" style="margin-right: 60px;" ng-show="calculated.showPart">
+                    <dt>{{id | modalCaseName:'myParts'}}</dt>
+                    <dd class="inline">{{part.thisQuantity}}{{part.unit}}
+                        <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{part.price | currency:"￥"}}</span></dd>
+                </dl>
             </div>
 
             <h3 class="text-right" style="margin-left: 10px;">
@@ -157,31 +134,45 @@
     </section>
 
     <section>
-        <a class="btn noprint" onclick="window.print();"><i class="icon-print"></i></a>
-        <div class="clearfix">
-        <h3>框料单</h3>
-        <dl class="pull-left" ng-repeat="(id, material) in queueCalculatedMaterial" style="margin-right: 60px;">
-            <dt>{{id | modalCaseName:'myMaterials'}}</dt>
-            <dd class="inline" ng-repeat="item in material">{{item.needLength}} = {{item.thisQuantity}} {{item.caseName}}
-                <span ng-show="needObject.showWeight" style="margin-left: 10px;">{{item.weight | number:3}}KG</span>
-                <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
-        </dl>
+        <div class="clearfix" ng-class="{noprint: printMaterialBall}">
+            <h4>铝材单 {{newBall.colour}}
+                <a class="btn noprint" ng-click="printBall(1)"><i class="icon-print"></i></a>
+                <span style="padding-left: 300px;">{{newBall.client}} </span>
+                <span style="padding-left: 20px;">交货日期：{{newBall.delivery}}</span>
+                <span class="pull-right">{{newBall.createdDate}}</span>
+            </h4>
+            <dl class="pull-left" ng-repeat="(id, material) in queueAfterCalculated.queueCalculatedMaterial" style="margin-right: 60px;">
+                <dt>{{id | modalCaseName:'myMaterials'}}</dt>
+                <dd class="inline" ng-repeat="item in material">{{item.needLength}} = {{item.thisQuantity}} {{item.caseName}}
+                    <span ng-show="needObject.showWeight" style="margin-left: 10px;">{{item.weight | number:3}}KG</span>
+                    <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
+            </dl>
         </div>
-        <div class="clearfix">
-        <h3>玻璃单</h3>
-        <dl class="pull-left" ng-repeat="(id, glass) in queueCalculatedGlass" style="margin-right: 60px;">
-            <dt>{{id | modalCaseName:'myGlasss'}}</dt>
-            <dd class="inline" ng-repeat="item in glass">{{item.needLength}} X {{item.needWidth}} = {{item.thisQuantity}}
-                <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
-        </dl>
+        <div class="clearfix" ng-class="{noprint: printGlassBall}">
+            <h4>玻璃单
+                <a class="btn noprint" ng-click="printBall(2)"><i class="icon-print"></i></a>
+                <span style="padding-left: 300px;">{{newBall.client}} </span>
+                <span style="padding-left: 20px;">交货日期：{{newBall.delivery}}</span>
+                <span class="pull-right">{{newBall.createdDate}}</span>
+            </h4>
+            <dl class="pull-left" ng-repeat="(id, glass) in queueAfterCalculated.queueCalculatedGlass" style="margin-right: 60px;">
+                <dt>{{id | modalCaseName:'myGlasss'}}</dt>
+                <dd class="inline" ng-repeat="item in glass">{{item.needLength}} X {{item.needWidth}} = {{item.thisQuantity}}
+                    <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
+            </dl>
         </div>
-        <div class="clearfix">
-        <h3>配件单</h3>
-        <dl class="pull-left" ng-repeat="(id, part) in queueCalculatedPart" style="margin-right: 60px;">
-            <dt>{{id | modalCaseName:'myParts'}}</dt>
-            <dd class="inline">{{part.thisQuantity}}{{part.unit}}
-                <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{part.price | currency:"￥"}}</span></dd>
-        </dl>
+        <div class="clearfix" ng-class="{noprint: printPartBall}">
+            <h4>配件单
+                <a class="btn noprint" ng-click="printBall(3)"><i class="icon-print"></i></a>
+                <span style="padding-left: 300px;">{{newBall.client}} </span>
+                <span style="padding-left: 20px;">交货日期：{{newBall.delivery}}</span>
+                <span class="pull-right">{{newBall.createdDate}}</span>
+            </h4>
+            <dl class="pull-left" ng-repeat="(id, part) in queueAfterCalculated.queueCalculatedPart" style="margin-right: 60px;">
+                <dt>{{id | modalCaseName:'myParts'}}</dt>
+                <dd class="inline">{{part.thisQuantity}}{{part.unit}}
+                    <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{part.price | currency:"￥"}}</span></dd>
+            </dl>
         </div>
     </section>
 

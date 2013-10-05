@@ -9,7 +9,7 @@ define(['Console'
         $scope.isShow = false;
         $scope.queue = MaterialService.queue();
         $scope.queueHead = [
-            '框料名'
+            '铝材名'
             , '每米的重量（Kg/m）'
             , '每公斤的单价（￥/Kg）'
         ];

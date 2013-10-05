@@ -1,8 +1,9 @@
 define([
     // Standard Libs
     'Console'// lib/console/console
+    , 'Underscore' // lib/underscore/underscore
     ,'utils/localStorageUtil'
-], function (Console,localStorageUtil) {
+], function (Console, _, localStorageUtil) {
   "use strict";
   Console.group("Entering WindowModelService module.");
 
@@ -21,6 +22,205 @@ define([
           ,GlassService
           ,PartService) {
       var db = $window.localStorage;
+
+      function calceulateList(queueNeedCalculates,callback){
+          Console.group("Entering WindowModelService module calceulateList",queueNeedCalculates);
+          var queueAfterCalculated = {
+              queueCalculated : {},
+              queueCalculatedMaterial : {},
+              queueCalculatedGlass : {},
+              queueCalculatedPart : {}
+          };
+          Console.debug("queueNeedCalculates.length",queueNeedCalculates.length);
+          for(var i=0;i < queueNeedCalculates.length; i++){
+
+              var needCalculate = queueNeedCalculates[i];
+              Console.debug("needCalculate",needCalculate);
+              calculate(needCalculate,function(afterCalculate){
+
+                  var calculatedWindowModel =  queueAfterCalculated.queueCalculated['p' + afterCalculate.windowModel.id] || {
+                      caseName: afterCalculate.windowModel.caseName,
+                      haveInner: afterCalculate.windowModel.haveInner,
+                      calculated:[],
+                      materialHead:[],
+                      glassHead:[],
+                      materials:{},
+                      glasss:{},
+                      parts:{},
+                      totalPrice:0,
+                      totalWeight:0
+                      ,totalMaterialPrice:0
+                      ,totalGlassPrice:0
+                      ,totalPartPrice:0
+                      ,showMaterial:true
+                      ,showGlass:true
+                      ,showPart:true
+                  };
+
+                  calculatedWindowModel.totalPrice += afterCalculate.totalPrice;
+                  calculatedWindowModel.totalWeight += afterCalculate.totalWeight;
+                  calculatedWindowModel.totalMaterialPrice += afterCalculate.totalMaterialPrice;
+                  calculatedWindowModel.totalGlassPrice += afterCalculate.totalGlassPrice;
+                  calculatedWindowModel.totalPartPrice += afterCalculate.totalPartPrice;
+
+                  calculatedWindowModel.calculated.push(afterCalculate);
+                  //构建表头
+                  if(calculatedWindowModel.materialHead.length == 0){
+                      for(var index = 0; index< afterCalculate.materials.length; index++ ){
+                          calculatedWindowModel.materialHead.push(afterCalculate.materials[index].caseName);
+                      }
+                  }
+                  if(calculatedWindowModel.glassHead.length == 0){
+                      for(var index = 0; index< afterCalculate.glasss.length; index++ ){
+                          calculatedWindowModel.glassHead.push(afterCalculate.glasss[index].caseName);
+                      }
+                  }
+                  //计算铝材
+                  for(var index = 0; index< afterCalculate.materials.length; index++ ){
+                      var afterCalculateMaterial = afterCalculate.materials[index];
+                      var calculated = calculatedWindowModel.materials['p' + afterCalculateMaterial.materialId] || {};
+
+                      var thisCalculatedMaterial = queueAfterCalculated.queueCalculatedMaterial['p' + afterCalculateMaterial.materialId] || {};
+                      Console.debug("afterCalculateMaterial.caseName.indexOf",afterCalculateMaterial.caseName + "," + afterCalculateMaterial.caseName.indexOf('侧') + "," + (afterCalculateMaterial.caseName.length-1));
+                      var thisCalculatedMaterialLength;
+                      var materialLength = calculated['l' + afterCalculateMaterial.length] || {
+                          needLength:afterCalculateMaterial.length,
+                          materialId:afterCalculateMaterial.materialId
+                      };
+                      if((afterCalculateMaterial.caseName.indexOf('侧') == (afterCalculateMaterial.caseName.length-1) ||
+                          afterCalculateMaterial.caseName.indexOf('企') == (afterCalculateMaterial.caseName.length-1))&&
+                          afterCalculate.windowModel.haveInner == 'true'){
+                          var thisCaseName = '( 内：' + afterCalculate.needObject.interHeight + ' ) ' + afterCalculate.windowModel.openNum + '开';
+                          thisCalculatedMaterialLength = thisCalculatedMaterial['l' + afterCalculateMaterial.length + 'k' + afterCalculate.windowModel.openNum + 'i' + afterCalculate.needObject.interHeight] || {
+                              needLength:afterCalculateMaterial.length,
+                              materialId:afterCalculateMaterial.materialId,
+                              caseName: thisCaseName
+                          };
+                          thisCalculatedMaterial['l' + afterCalculateMaterial.length + 'k' + afterCalculate.windowModel.openNum + 'i' + afterCalculate.needObject.interHeight] = thisCalculatedMaterialLength;
+
+                          materialLength = calculated['l' + afterCalculateMaterial.length + 'i' + afterCalculate.needObject.interHeight] || {
+                              needLength:afterCalculateMaterial.length,
+                              materialId:afterCalculateMaterial.materialId,
+                              caseName: thisCaseName
+                          };
+                          calculated['l' + afterCalculateMaterial.length + 'i' + afterCalculate.needObject.interHeight] = materialLength;
+                      }else{
+                          thisCalculatedMaterialLength = thisCalculatedMaterial['l' + afterCalculateMaterial.length] || {
+                              needLength:afterCalculateMaterial.length,
+                              materialId:afterCalculateMaterial.materialId
+                          };
+                          thisCalculatedMaterial['l' + afterCalculateMaterial.length] = thisCalculatedMaterialLength;
+
+                          materialLength = calculated['l' + afterCalculateMaterial.length] || {
+                              needLength:afterCalculateMaterial.length,
+                              materialId:afterCalculateMaterial.materialId
+                          };
+                          calculated['l' + afterCalculateMaterial.length] = materialLength;
+                      }
+                      materialLength.thisQuantity = parseInt((materialLength.thisQuantity || '0')) + parseInt(afterCalculateMaterial.thisQuantity);
+                      thisCalculatedMaterialLength.thisQuantity = parseInt((thisCalculatedMaterialLength.thisQuantity || '0')) + parseInt(afterCalculateMaterial.thisQuantity);
+
+
+                      calculatedWindowModel.materials['p' + afterCalculateMaterial.materialId] = calculated;
+                      queueAfterCalculated.queueCalculatedMaterial['p' + afterCalculateMaterial.materialId] = thisCalculatedMaterial;
+                  }
+                  //计算玻璃
+                  for(var index = 0; index< afterCalculate.glasss.length; index++ ){
+                      var afterCalculateGlass = afterCalculate.glasss[index];
+                      var calculated = calculatedWindowModel.glasss['p' + afterCalculateGlass.glassId] || {};
+                      var thisCalculatedGlass = queueAfterCalculated.queueCalculatedGlass['p' + afterCalculateGlass.glassId] || {};
+                      var thisCalculatedGlassArea = thisCalculatedGlass[afterCalculateGlass.lengthFormula + 'X' + afterCalculateGlass.widthFormula] ||
+                      {
+                          needLength:afterCalculateGlass.lengthFormula,
+                          needWidth:afterCalculateGlass.widthFormula,
+                          glassId:afterCalculateGlass.glassId
+                      };
+
+                      var glassArea = calculated[afterCalculateGlass.lengthFormula + 'X' + afterCalculateGlass.widthFormula] ||
+                      {
+                          needLength:afterCalculateGlass.lengthFormula,
+                          needWidth:afterCalculateGlass.widthFormula,
+                          glassId:afterCalculateGlass.glassId
+                      };
+
+                      glassArea.thisQuantity = parseInt((glassArea.thisQuantity || '0')) + parseInt(afterCalculateGlass.thisQuantity);
+                      thisCalculatedGlassArea.thisQuantity = parseInt((thisCalculatedGlassArea.thisQuantity || '0')) + parseInt(afterCalculateGlass.thisQuantity);
+                      thisCalculatedGlass[afterCalculateGlass.lengthFormula + 'X' + afterCalculateGlass.widthFormula] = thisCalculatedGlassArea;
+                      calculated[afterCalculateGlass.lengthFormula + 'X' + afterCalculateGlass.widthFormula] = glassArea;
+                      calculatedWindowModel.glasss['p' + afterCalculateGlass.glassId] = calculated;
+                      queueAfterCalculated.queueCalculatedGlass['p' + afterCalculateGlass.glassId] = thisCalculatedGlass;
+                  }
+                  //计算配件
+                  for(var index = 0; index< afterCalculate.parts.length; index++ ){
+                      var afterCalculatePart = afterCalculate.parts[index];
+
+                      var thisCalculatedPart = queueAfterCalculated.queueCalculatedPart['p' + afterCalculatePart.partId] || {
+                          unit: afterCalculatePart.unit
+                          ,thisQuantity: 0
+                          ,price:0
+                      };
+
+                      var calculated = calculatedWindowModel.parts['p' + afterCalculatePart.partId] || {
+                          unit: afterCalculatePart.unit
+                          ,thisQuantity: 0
+                          ,price:0
+                      };
+                      calculated.thisQuantity += parseFloat(afterCalculatePart.thisQuantity || 0);
+                      calculated.price += parseFloat(afterCalculatePart.price || 0);
+                      thisCalculatedPart.thisQuantity += parseFloat(afterCalculatePart.thisQuantity || 0);
+                      thisCalculatedPart.price += parseFloat(afterCalculatePart.price || 0);
+
+                      calculatedWindowModel.parts['p' + afterCalculatePart.partId] = calculated;
+
+                      queueAfterCalculated.queueCalculatedPart['p' + afterCalculatePart.partId] = thisCalculatedPart;
+                  }
+
+
+
+                  _.each(calculatedWindowModel.materials, function(valueFirst, keyFirst) {
+                      _.each(valueFirst, function(value, key) {
+                          Console.debug("value",value);
+                          MaterialService.getObjectById(value.materialId,function(gotMaterial){
+                              value.weight = parseFloat(gotMaterial.weight || 0)*parseInt(value.needLength || 0)/1000*value.thisQuantity;
+                              value.price =  parseFloat(value.weight || 0)*parseFloat(gotMaterial.price);
+                          });
+                      });
+                  });
+                  _.each(calculatedWindowModel.glasss, function(valueFirst, keyFirst) {
+                      _.each(valueFirst, function(value, key) {
+                          Console.debug("value",value);
+                          GlassService.getObjectById(value.glassId,function(gotGlass){
+                              value.price =  parseInt(value.needLength || 0)*parseInt(value.needWidth || 0)*parseFloat(gotGlass.price)*value.thisQuantity/1000000;
+                          });
+                      });
+                  });
+                  _.each(queueAfterCalculated.queueCalculatedMaterial, function(valueFirst, keyFirst) {
+                      _.each(valueFirst, function(value, key) {
+                          Console.debug("value",value);
+                          MaterialService.getObjectById(value.materialId,function(gotMaterial){
+                              value.weight = parseFloat(gotMaterial.weight || 0)*parseInt(value.needLength || 0)/1000*value.thisQuantity;
+                              value.price =  parseFloat(value.weight || 0)*parseFloat(gotMaterial.price);
+                          });
+                      });
+                  });
+                  _.each(queueAfterCalculated.queueCalculatedGlass, function(valueFirst, keyFirst) {
+                      _.each(valueFirst, function(value, key) {
+                          Console.debug("value",value);
+                          GlassService.getObjectById(value.glassId,function(gotGlass){
+                              value.price =  parseInt(value.needLength || 0)*parseInt(value.needWidth || 0)*parseFloat(gotGlass.price)*value.thisQuantity/1000000;
+                          });
+                      });
+                  });
+                  queueAfterCalculated.queueCalculated['p' + afterCalculate.windowModel.id] = calculatedWindowModel;
+              });
+              Console.debug("queueCalculatedMaterial",queueAfterCalculated.queueCalculatedMaterial);
+              Console.debug("queueCalculated",queueAfterCalculated.queueCalculated);
+          }
+          Console.groupEnd();
+          callback(queueAfterCalculated);
+      }
+
+
 
       function calculate(object,callback){
           getObjectById(object.windowModelId,function(gotObject){
@@ -220,8 +420,8 @@ define([
         queue:queue,
         removeObject:removeObject,
         getObjectById:getObjectById,
-        calculate:calculate
-
+        calculate:calculate,
+        calceulateList:calceulateList
     };
 
   }];
