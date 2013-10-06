@@ -18,6 +18,10 @@
         <input class="input-small" placeholder="铝材名" ng-model="willSaveObject.caseName" type="text" required>
         <input class="input-small span2" placeholder="每米的重量（Kg/m）" ng-model="willSaveObject.weight" type="number" required>
         <input class="input-small span2" placeholder="每公斤的单价（￥/Kg）" ng-model="willSaveObject.price" type="number" required>
+        <select ng-model="willSaveObject.materialType">
+            <option value="框料">框料</option>
+            <option value="门料">门料</option>
+        </select>
         <button type="submit" class="btn" ng-click="saveObject(willSaveObject)">添加</button>
         <button type="submit" class="btn" ng-click="updateObject(willSaveObject)">修改</button>
         <button type="button" class="btn" ng-click="willSaveObject = undefined">清空</button>
@@ -41,6 +45,7 @@
             <td>
                 <button type="button" class="btn" ng-click="removeObject(item)"><i class="icon-remove"></i>删除</button>
                 {{item.caseName}}</td>
+            <td>{{item.materialType || '框料'}}</td>
             <td>{{item.weight}}</td>
             <td>{{item.price | currency:"￥"}}</td>
         </tr>

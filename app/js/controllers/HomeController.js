@@ -1,4 +1,4 @@
-define(['Console'
+﻿define(['Console'
     , 'Underscore' // lib/underscore/underscore
     ], function (Console,_) {
     "use strict";
@@ -31,7 +31,7 @@ define(['Console'
                     queueNotNowCalculate: []
                 };
             }
-
+            $scope.materialType = '';
 
 
 
@@ -63,30 +63,30 @@ define(['Console'
                 Console.group("notNowCalculate",type);
                 switch(type){
                     case 1:
-                        $scope.printClientBall = false;
-                        $scope.printMaterialBall = true;
-                        $scope.printGlassBall = false;
-                        $scope.printPartBall = false;
-                        break;
-                    case 2:
-                        $scope.printClientBall = false;
+                        $scope.printClientBall = true;
                         $scope.printMaterialBall = false;
                         $scope.printGlassBall = true;
-                        $scope.printPartBall = false;
+                        $scope.printPartBall = true;
                         break;
-
-                    case 3:
-                        $scope.printClientBall = false;
-                        $scope.printMaterialBall = false;
+                    case 2:
+                        $scope.printClientBall = true;
+                        $scope.printMaterialBall = true;
                         $scope.printGlassBall = false;
                         $scope.printPartBall = true;
                         break;
 
-                    default :
+                    case 3:
                         $scope.printClientBall = true;
-                        $scope.printMaterialBall = false;
-                        $scope.printGlassBall = false;
+                        $scope.printMaterialBall = true;
+                        $scope.printGlassBall = true;
                         $scope.printPartBall = false;
+                        break;
+
+                    default :
+                        $scope.printClientBall = false;
+                        $scope.printMaterialBall = true;
+                        $scope.printGlassBall = true;
+                        $scope.printPartBall = true;
                         break;
 
                 }

@@ -1,4 +1,4 @@
-define([
+﻿define([
     // Standard Libs
     'Console'// lib/console/console
     , 'Underscore' // lib/underscore/underscore
@@ -80,23 +80,31 @@ define([
                       var afterCalculateMaterial = afterCalculate.materials[index];
                       var calculated = calculatedWindowModel.materials['p' + afterCalculateMaterial.materialId] || {};
 
-                      var thisCalculatedMaterial = queueAfterCalculated.queueCalculatedMaterial['p' + afterCalculateMaterial.materialId] || {};
+                      var thisCalculatedMaterial = queueAfterCalculated.queueCalculatedMaterial['p' + afterCalculateMaterial.materialId] || {
+                          materialType:afterCalculateMaterial.materialType || '框料',
+                          materialSizes:{}
+                      };
                       Console.debug("afterCalculateMaterial.caseName.indexOf",afterCalculateMaterial.caseName + "," + afterCalculateMaterial.caseName.indexOf('侧') + "," + (afterCalculateMaterial.caseName.length-1));
                       var thisCalculatedMaterialLength;
                       var materialLength = calculated['l' + afterCalculateMaterial.length] || {
                           needLength:afterCalculateMaterial.length,
                           materialId:afterCalculateMaterial.materialId
                       };
-                      if((afterCalculateMaterial.caseName.indexOf('侧') == (afterCalculateMaterial.caseName.length-1) ||
-                          afterCalculateMaterial.caseName.indexOf('企') == (afterCalculateMaterial.caseName.length-1))&&
-                          afterCalculate.windowModel.haveInner == 'true'){
-                          var thisCaseName = '( 内：' + afterCalculate.needObject.interHeight + ' ) ' + afterCalculate.windowModel.openNum + '开';
-                          thisCalculatedMaterialLength = thisCalculatedMaterial['l' + afterCalculateMaterial.length + 'k' + afterCalculate.windowModel.openNum + 'i' + afterCalculate.needObject.interHeight] || {
+                      if(afterCalculateMaterial.caseName.indexOf('侧') == (afterCalculateMaterial.caseName.length-1) ||
+                          afterCalculateMaterial.caseName.indexOf('企') == (afterCalculateMaterial.caseName.length-1)){
+
+                          var thisCaseName = '';
+                          if(afterCalculate.windowModel.haveInner == 'true'){
+                               thisCaseName = thisCaseName + '( 内：' + afterCalculate.needObject.interHeight + ' ) ';
+                          }
+                          thisCaseName = thisCaseName + ' ( ' + afterCalculate.windowModel.openNum + '开 )';
+                        
+                          thisCalculatedMaterialLength = thisCalculatedMaterial.materialSizes['l' + afterCalculateMaterial.length + 'k' + afterCalculate.windowModel.openNum + 'i' + (afterCalculate.needObject.interHeight || 0)] || {
                               needLength:afterCalculateMaterial.length,
                               materialId:afterCalculateMaterial.materialId,
                               caseName: thisCaseName
                           };
-                          thisCalculatedMaterial['l' + afterCalculateMaterial.length + 'k' + afterCalculate.windowModel.openNum + 'i' + afterCalculate.needObject.interHeight] = thisCalculatedMaterialLength;
+                          thisCalculatedMaterial.materialSizes['l' + afterCalculateMaterial.length + 'k' + afterCalculate.windowModel.openNum + 'i' + afterCalculate.needObject.interHeight] = thisCalculatedMaterialLength;
 
                           materialLength = calculated['l' + afterCalculateMaterial.length + 'i' + afterCalculate.needObject.interHeight] || {
                               needLength:afterCalculateMaterial.length,
@@ -105,11 +113,11 @@ define([
                           };
                           calculated['l' + afterCalculateMaterial.length + 'i' + afterCalculate.needObject.interHeight] = materialLength;
                       }else{
-                          thisCalculatedMaterialLength = thisCalculatedMaterial['l' + afterCalculateMaterial.length] || {
+                          thisCalculatedMaterialLength = thisCalculatedMaterial.materialSizes['l' + afterCalculateMaterial.length] || {
                               needLength:afterCalculateMaterial.length,
                               materialId:afterCalculateMaterial.materialId
                           };
-                          thisCalculatedMaterial['l' + afterCalculateMaterial.length] = thisCalculatedMaterialLength;
+                          thisCalculatedMaterial.materialSizes['l' + afterCalculateMaterial.length] = thisCalculatedMaterialLength;
 
                           materialLength = calculated['l' + afterCalculateMaterial.length] || {
                               needLength:afterCalculateMaterial.length,
@@ -195,7 +203,7 @@ define([
                       });
                   });
                   _.each(queueAfterCalculated.queueCalculatedMaterial, function(valueFirst, keyFirst) {
-                      _.each(valueFirst, function(value, key) {
+                      _.each(valueFirst.materialSizes, function(value, key) {
                           Console.debug("value",value);
                           MaterialService.getObjectById(value.materialId,function(gotMaterial){
                               value.weight = parseFloat(gotMaterial.weight || 0)*parseInt(value.needLength || 0)/1000*value.thisQuantity;
@@ -259,6 +267,7 @@ define([
                                  var material = {
                                      materialId: thisMaterial.id
                                      ,caseName: thisMaterial.caseName
+                                     ,materialType:thisMaterial.materialType
                                      ,length: length
                                      ,thisQuantity: thisQuantity
                                      ,weight: weight

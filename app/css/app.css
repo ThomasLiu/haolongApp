@@ -297,18 +297,18 @@ textarea {
     h3 {
         page-break-after: avoid;
     }
-    .noprint{display:none}
+    .noprint{display:none} .materialBall{font-size: 19px;}
 
 
     .table-bordered th, .table-bordered td{
-        border-left: 1px solid #111111;
+        border-left: 1px solid #000000;
     }
 
     .table th, .table td{
-        border-top: 1px solid #111111;
+        border-top: 1px solid #000000;
     }
     .table-bordered{
-        border-color: #111111 #111111 #111111 -moz-use-text-color;
+        border-color: #000000 #000000 #000000 -moz-use-text-color;
     }
 }
 

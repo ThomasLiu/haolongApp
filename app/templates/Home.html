@@ -134,16 +134,28 @@
     </section>
 
     <section>
-        <div class="clearfix" ng-class="{noprint: printMaterialBall}">
+        <div class="clearfix materialBall" ng-class="{noprint: printMaterialBall}">
             <h4>铝材单 {{newBall.colour}}
                 <a class="btn noprint" ng-click="printBall(1)"><i class="icon-print"></i></a>
-                <span style="padding-left: 300px;">{{newBall.client}} </span>
+                <span style="padding-left: 30px;">{{newBall.client}} </span>
                 <span style="padding-left: 20px;">交货日期：{{newBall.delivery}}</span>
                 <span class="pull-right">{{newBall.createdDate}}</span>
+
             </h4>
-            <dl class="pull-left" ng-repeat="(id, material) in queueAfterCalculated.queueCalculatedMaterial" style="margin-right: 60px;">
+            <div class="noprint">
+                <label class="radio inline">
+                    <input type="radio" ng-model="materialType" value=""> 全部
+                </label>
+                <label class="radio inline">
+                    <input type="radio" ng-model="materialType" value="框料"> 框料
+                </label>
+                <label class="radio inline">
+                    <input type="radio" ng-model="materialType" value="门料"> 门料
+                </label>
+            </div>
+            <dl class="pull-left" ng-show="material.materialType == materialType || materialType == ''" ng-repeat="(id, material) in queueAfterCalculated.queueCalculatedMaterial" style="margin-right: 60px;">
                 <dt>{{id | modalCaseName:'myMaterials'}}</dt>
-                <dd class="inline" ng-repeat="item in material">{{item.needLength}} = {{item.thisQuantity}} {{item.caseName}}
+                <dd class="inline" ng-repeat="item in material.materialSizes">{{item.needLength}} = {{item.thisQuantity}} {{item.caseName}}
                     <span ng-show="needObject.showWeight" style="margin-left: 10px;">{{item.weight | number:3}}KG</span>
                     <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
             </dl>
@@ -151,7 +163,7 @@
         <div class="clearfix" ng-class="{noprint: printGlassBall}">
             <h4>玻璃单
                 <a class="btn noprint" ng-click="printBall(2)"><i class="icon-print"></i></a>
-                <span style="padding-left: 300px;">{{newBall.client}} </span>
+                <span style="padding-left: 30px;">{{newBall.client}} </span>
                 <span style="padding-left: 20px;">交货日期：{{newBall.delivery}}</span>
                 <span class="pull-right">{{newBall.createdDate}}</span>
             </h4>
@@ -164,7 +176,7 @@
         <div class="clearfix" ng-class="{noprint: printPartBall}">
             <h4>配件单
                 <a class="btn noprint" ng-click="printBall(3)"><i class="icon-print"></i></a>
-                <span style="padding-left: 300px;">{{newBall.client}} </span>
+                <span style="padding-left: 30px;">{{newBall.client}} </span>
                 <span style="padding-left: 20px;">交货日期：{{newBall.delivery}}</span>
                 <span class="pull-right">{{newBall.createdDate}}</span>
             </h4>
