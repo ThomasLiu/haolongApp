@@ -1,0 +1,33 @@
+﻿<header id="overview" class="jumbotron subhead">
+    <div class="container">
+        <h1>订单管理</h1>
+        <p class="lead">在首页保存的订单将可以在这里管理。</p>
+    </div>
+</header>
+<div class="container">
+    <h3>已入库的订单</h3>
+    <table class="table">
+        <thead>
+        <tr>
+
+            <th ng-repeat="tableHead in queueHead">
+                {{tableHead}}
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="item in queue| filter:willSaveObject.caseName" ng-click="getObject(item)">
+
+            <td>
+                <button type="button" class="btn" ng-click="removeObject(item)"><i class="icon-remove"></i>删除</button>
+                <a href="#/ballDetail/{{item.id}}">{{item.client}}</a></td>
+            <td>{{item.delivery}}</td>
+            <td>{{item.colour}}</td>
+            <td>{{item.createdDate}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
