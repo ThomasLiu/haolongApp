@@ -11,13 +11,16 @@
             <form>
                 <input placeholder="客户名" ng-model="newBall.client" type="text" required>
                 <input class="input-small" placeholder="交货日期" ng-model="newBall.delivery" type="text" required>
-                <input class="input-small" placeholder="颜色" ng-model="newBall.colour" type="text" required>
+                <select class="input-small" ng-model="newBall.color" ng-options="i.caseName as i.caseName for i in queueColor"></select>
+                <select class="input-small" ng-model="newBall.grain" ng-options="i.caseName as i.caseName for i in queueGrain"></select>
+                <input class="input-small" placeholder="备注" ng-model="newBall.colour" type="text" required>
                 <label>请输入需要计算的窗型</label>
                 <select ng-model="needObject.windowModelId" ng-options="i.id as i.caseName for i in queueWindowModel"
                         ng-change="change(needObject.windowModelId)"></select>
                 <br>
-                <input class="input-small" placeholder="高(mm)" ng-model="needObject.height" type="number" required>
+
                 <input class="input-small" placeholder="宽(mm)" ng-model="needObject.width" type="number" required>
+                <input class="input-small" placeholder="高(mm)" ng-model="needObject.height" type="number" required>
                 <input class="input-small" placeholder="内孔高(mm)" ng-model="needObject.interHeight" type="number" required ng-show="selectedWindowModel.haveInner">
                 <input class="input-small" placeholder="需要多少个" ng-model="needObject.quantity" type="number" required>
                 <br>
@@ -45,14 +48,15 @@
     <section class="afterCalculate-section noprint" ng-show="newBall.queueNotNowCalculate.length > 0">
         <hr>
         <h4>暂时记住的下料单有：</h4>
-        <ul>
+        <ol>
             <li ng-repeat="notNowCalculate in newBall.queueNotNowCalculate">
                 <span>{{notNowCalculate.windowModelId | modalCaseName:'myWindowModels'}}：</span>
-                <span class="afterCalculate-result">{{notNowCalculate.height || 0}} X {{notNowCalculate.width || 0}}，{{notNowCalculate.quantity || 0}}</span>
+                <span class="afterCalculate-result">{{notNowCalculate.width || 0}}  X {{notNowCalculate.height || 0}}= {{notNowCalculate.quantity || 0}}</span>
                 <span ng-show="notNowCalculate.interHeight"> 内孔高：{{notNowCalculate.interHeight}}</span>
                 [ <a href=""  ng-click="removeNotNowCalculate($index)">X</a> ]
             </li>
-        </ul>
+        </ol>
+        <label>共：{{newBall.queueNotNowCalculate | countQuantity }} 个</label>
         <button type="button" class="btn" style="margin-left: 300px;" ng-click="calculate(newBall.queueNotNowCalculate)">计算全部</button>
         <hr>
     </section>
@@ -81,7 +85,7 @@
             </h4>
             <table class="table table-bordered">
                 <tr>
-                    <th>高 X 宽 <span ng-show="calculated.haveInner">( 内 )</span></th>
+                    <th>宽 X 高 <span ng-show="calculated.haveInner">( 内 )</span></th>
                     <th ng-repeat="material in calculated.materialHead" ng-show="calculated.showMaterial">
                         {{material}}
                     </th>
@@ -94,7 +98,7 @@
                     <td>
                         <a target="_blank"
                            ng-href="#/calculate/{{item.needObject.windowModelId || 0}}/{{item.needObject.height || 0}}/{{item.needObject.width || 0}}/{{item.needObject.interHeight || 0}}/{{item.needObject.quantity || 0}}/{{item.needObject.showWeight || false}}/{{item.needObject.showPrice || false}}">
-                            {{item.needObject.height || 0}} X {{item.needObject.width || 0}} = {{item.needObject.quantity || 0}} <span ng-show="calculated.haveInner">( {{item.needObject.interHeight}} )</span>
+                            {{item.needObject.width || 0}} X {{item.needObject.height || 0}} = {{item.needObject.quantity || 0}} <span ng-show="calculated.haveInner">( {{item.needObject.interHeight}} )</span>
                         </a>
                     </td>
                     <td ng-repeat="material in item.materials" ng-show="calculated.showMaterial">
@@ -132,10 +136,10 @@
         </div>
         <hr>
     </section>
-
+    <a class="btn noprint" ng-click="printBall(4)"><i class="icon-print"></i>打印铝材单和配件单</a>
     <section>
         <div class="clearfix materialBall" ng-class="{noprint: printMaterialBall}">
-            <h4>铝材单 {{newBall.colour}}
+            <h4>铝材单 {{newBall.color}} {{newBall.grain}} {{newBall.colour}}
                 <a class="btn noprint" ng-click="printBall(1)"><i class="icon-print"></i></a>
                 <span style="padding-left: 30px;">{{newBall.client}} </span>
                 <span style="padding-left: 20px;">交货日期：{{newBall.delivery}}</span>
@@ -154,13 +158,13 @@
                 </label>
             </div>
             <dl class="pull-left" ng-show="material.materialType == materialType || materialType == ''" ng-repeat="(id, material) in queueAfterCalculated.queueCalculatedMaterial" style="margin-right: 60px;">
-                <dt>{{id | modalCaseName:'myMaterials'}}</dt>
+                <dt>{{id | modalCaseName:'myMaterials'}} ( 共{{material.sumQuantity}} )</dt>
                 <dd class="inline" ng-repeat="item in material.materialSizes">{{item.needLength}} = {{item.thisQuantity}} {{item.caseName}}
                     <span ng-show="needObject.showWeight" style="margin-left: 10px;">{{item.weight | number:3}}KG</span>
                     <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
             </dl>
         </div>
-        <div class="clearfix" ng-class="{noprint: printGlassBall}">
+        <div class="clearfix materialBall" ng-class="{noprint: printGlassBall}">
             <h4>玻璃单
                 <a class="btn noprint" ng-click="printBall(2)"><i class="icon-print"></i></a>
                 <span style="padding-left: 30px;">{{newBall.client}} </span>

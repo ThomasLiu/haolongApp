@@ -4,7 +4,9 @@ define([
   ,'text!templates/WindowModel.html'
   ,'text!templates/Glass.html'
   ,'text!templates/Ball.html'
-],function(partTemplate,materialTemplate,windowModelTemplate,glassTemplate,ballTemplate){
+  ,'text!templates/Color.html'
+  ,'text!templates/Grain.html'
+],function(partTemplate,materialTemplate,windowModelTemplate,glassTemplate,ballTemplate,colorTemplate,grainTemplate){
   return {
     windowModel: {
           title: '窗型管理'
@@ -36,5 +38,17 @@ define([
           , controller: 'ball'
           , template: ballTemplate
     }
+    , color: {
+          title: '颜色管理'
+          , route: '/color'
+          , controller: 'color'
+          , template: colorTemplate
+    }
+      , grain: {
+          title: '厘数管理'
+          , route: '/grain'
+          , controller: 'grain'
+          , template: grainTemplate
+      }
   };
 })

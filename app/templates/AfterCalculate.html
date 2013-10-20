@@ -1,13 +1,13 @@
-<div class="container" style="margin-top: 30px;">
+﻿<div class="container" style="margin-top: 30px;">
     <section class="afterCalculate-section">
 
         <div class="page-header" >
             <h1>{{afterCalculate.windowModel.caseName}}
                 <small>
                     <strong>{{afterCalculate.windowModel.windowType}}</strong>类型
-                    {{afterCalculate.needObject.height}} X {{afterCalculate.needObject.width}}
+                    {{afterCalculate.needObject.width}} X {{afterCalculate.needObject.height}}
                     <span ng-show="afterCalculate.windowModel.haveInner">内孔高{{afterCalculate.needObject.interHeight}}</span>
-                    ，{{afterCalculate.needObject.quantity}}
+                     = {{afterCalculate.needObject.quantity}}
                     <a class="btn noprint" onclick="window.print();"><i class="icon-print"></i></a>
                 </small>
             </h1>

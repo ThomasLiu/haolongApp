@@ -51,6 +51,7 @@ define([
               myData.count = myData.count + 1;
           }
           object.createdDate = (new Date()).toLocaleString();
+          object.createdDateTime = (new Date()).setTime();
           myData['p' + object.id] = object;
           db.myBalls = JSON.stringify(myData);
           Console.groupEnd();

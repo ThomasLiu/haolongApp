@@ -13,7 +13,9 @@ define([
   , 'services/NeedGlassService'
   , 'services/NeedPartService'
   , 'services/BallService'
-], function(Console, _, ps, ms, ws, gs, nms, ngs, nps, bs) {
+  , 'services/ColorService'
+  , 'services/GrainService'
+], function(Console, _, ps, ms, ws, gs, nms, ngs, nps, bs, cs, grains) {
   "use strict";
   Console.group("Entering Service module.");
   Console.info("PartService", ps);
@@ -24,6 +26,8 @@ define([
   Console.info("NeedGlassService", ngs);
   Console.info("NeedPartService", nps);
   Console.info("BallService", bs);
+  Console.info("ColorService", cs);
+  Console.info("GrainService", grains);
   var services = {
       PartService: ps,
       MaterialService: ms
@@ -33,6 +37,8 @@ define([
       ,NeedGlassService:ngs
       ,NeedPartService:nps
       ,BallService:bs
+      ,ColorService:cs
+      ,GrainService:grains
   };
   Console.info("Registered services: ", services);
 

@@ -8,13 +8,21 @@
         , 'WindowModelService'
         , 'BallService'
         , '$routeParams'
+        , 'ColorService'
+        , 'GrainService'
         , function ($scope
             ,WindowModelService
             ,BallService
-            ,$routeParams) {
+            ,$routeParams
+            ,ColorService
+            ,GrainService) {
             Console.group("WindowModelDetailController entered.");
 
             $scope.queueWindowModel = WindowModelService.queue();
+
+            $scope.queueColor = ColorService.queue();
+
+            $scope.queueGrain = GrainService.queue();
 
             $scope.removeNotNowCalculate = function(index){
                 $scope.newBall.queueNotNowCalculate.splice(index, 1);
@@ -78,6 +86,13 @@
                     case 3:
                         $scope.printClientBall = true;
                         $scope.printMaterialBall = true;
+                        $scope.printGlassBall = true;
+                        $scope.printPartBall = false;
+                        break;
+
+                    case 4:
+                        $scope.printClientBall = true;
+                        $scope.printMaterialBall = false;
                         $scope.printGlassBall = true;
                         $scope.printPartBall = false;
                         break;

@@ -19,6 +19,8 @@ define([
   , 'controllers/NeedPartController'
   , 'controllers/AfterCalculateController'
   , 'controllers/BallController'
+  , 'controllers/ColorController'
+  , 'controllers/GrainController'
 ], function (Console, _, routes, app
     ,home
     ,part
@@ -30,7 +32,9 @@ define([
     ,needGlass
     ,needPart
     ,afterCalculate
-    ,ball) {
+    ,ball
+    ,color
+    ,grain) {
   "use strict";
   Console.group("Entering controllers module.");
   Console.info("AppController", app);
@@ -47,6 +51,8 @@ define([
       ,needPart:needPart
       ,afterCalculate:afterCalculate
       ,ball:ball
+      ,color:color
+      ,grain:grain
   };
 
 

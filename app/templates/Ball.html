@@ -20,12 +20,14 @@
         </thead>
 
         <tbody>
-        <tr ng-repeat="item in queue| filter:search:strict | orderBy:'createdDate':true" ng-click="getObject(item)">
+        <tr ng-repeat="item in queue| filter:search:strict | orderBy:'createdDateTime':true" ng-click="getObject(item)">
 
             <td>
                 <button type="button" class="btn" ng-click="removeObject(item)"><i class="icon-remove"></i>删除</button>
                 <a href="#/ballDetail/{{item.id}}">{{item.client}}</a></td>
             <td>{{item.delivery}}</td>
+            <td>{{item.color}}</td>
+            <td>{{item.grain}}</td>
             <td>{{item.colour}}</td>
             <td>{{item.createdDate}}</td>
         </tr>

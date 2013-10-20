@@ -21,6 +21,10 @@
             <option value="false">无内孔</option>
             <option value="true">有内孔</option>
         </select>
+        <select ng-model="willSaveObject.haveCopperBar">
+            <option value="false">无铜条</option>
+            <option value="true">有铜条</option>
+        </select>
         <input class="input-small" placeholder="几多开" ng-model="willSaveObject.openNum" type="text" required>
         <button type="submit" class="btn" ng-click="saveObject(willSaveObject)">添加</button>
         <button type="submit" class="btn" ng-click="updateObject(willSaveObject)">修改</button>
@@ -46,6 +50,7 @@
                 <a href="#/windowModelDetail/{{item.id}}">{{item.caseName}}</a></td>
             <td>{{item.windowType}}</td>
             <td ng-switch on="item.haveInner"><span ng-switch-when="true">有内孔</span><span ng-switch-default>无内孔</span></td>
+            <td ng-switch on="item.haveCopperBar"><span ng-switch-when="true">有铜条</span><span ng-switch-default>无铜条</span></td>
             <td>{{item.openNum}}</td>
         </tr>
         </tbody>

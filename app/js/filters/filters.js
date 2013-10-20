@@ -5,15 +5,17 @@ define([
   // Application Filters
   , 'filters/ModalCaseNameFilter'
   , 'filters/HomePlaceFilter'
-], function (Console,_ , msnf, hpf){
+  , 'filters/CountQuantityFilter'
+], function (Console,_ , msnf, hpf, cqf){
   "use strict";
   Console.group("Entering Filters module.");
   Console.info("modalCaseName", msnf);
   Console.info("homePlace", hpf);
-
+  Console.info("countQuantity", cqf);
   var filters = {
        modalCaseName :msnf
       ,homePlace:hpf
+      ,countQuantity:cqf
   };
   Console.info("Registered filters: ", filters);
 

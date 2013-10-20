@@ -82,6 +82,7 @@
 
                       var thisCalculatedMaterial = queueAfterCalculated.queueCalculatedMaterial['p' + afterCalculateMaterial.materialId] || {
                           materialType:afterCalculateMaterial.materialType || '框料',
+                          sumQuantity:0,
                           materialSizes:{}
                       };
                       Console.debug("afterCalculateMaterial.caseName.indexOf",afterCalculateMaterial.caseName + "," + afterCalculateMaterial.caseName.indexOf('侧') + "," + (afterCalculateMaterial.caseName.length-1));
@@ -97,21 +98,24 @@
                           if(afterCalculate.windowModel.haveInner == 'true'){
                                thisCaseName = thisCaseName + '( 内：' + afterCalculate.needObject.interHeight + ' ) ';
                           }
+                          if(afterCalculate.windowModel.haveCopperBar == 'true'){
+                              thisCaseName = thisCaseName + '( 有铜条 ) ';
+                          }
                           thisCaseName = thisCaseName + ' ( ' + afterCalculate.windowModel.openNum + '开 )';
-                        
-                          thisCalculatedMaterialLength = thisCalculatedMaterial.materialSizes['l' + afterCalculateMaterial.length + 'k' + afterCalculate.windowModel.openNum + 'i' + (afterCalculate.needObject.interHeight || 0)] || {
+                          var tempName = 'l' + afterCalculateMaterial.length + 'k' + afterCalculate.windowModel.openNum + 'i' + (afterCalculate.needObject.interHeight || 0);
+                          thisCalculatedMaterialLength = thisCalculatedMaterial.materialSizes[tempName] || {
                               needLength:afterCalculateMaterial.length,
                               materialId:afterCalculateMaterial.materialId,
                               caseName: thisCaseName
                           };
-                          thisCalculatedMaterial.materialSizes['l' + afterCalculateMaterial.length + 'k' + afterCalculate.windowModel.openNum + 'i' + afterCalculate.needObject.interHeight] = thisCalculatedMaterialLength;
+                          thisCalculatedMaterial.materialSizes[tempName] = thisCalculatedMaterialLength;
 
-                          materialLength = calculated['l' + afterCalculateMaterial.length + 'i' + afterCalculate.needObject.interHeight] || {
+                          materialLength = calculated['l' + afterCalculateMaterial.length + 'i' + (afterCalculate.needObject.interHeight || 0)] || {
                               needLength:afterCalculateMaterial.length,
                               materialId:afterCalculateMaterial.materialId,
                               caseName: thisCaseName
                           };
-                          calculated['l' + afterCalculateMaterial.length + 'i' + afterCalculate.needObject.interHeight] = materialLength;
+                          calculated['l' + afterCalculateMaterial.length + 'i' + (afterCalculate.needObject.interHeight || 0)] = materialLength;
                       }else{
                           thisCalculatedMaterialLength = thisCalculatedMaterial.materialSizes['l' + afterCalculateMaterial.length] || {
                               needLength:afterCalculateMaterial.length,
@@ -125,9 +129,12 @@
                           };
                           calculated['l' + afterCalculateMaterial.length] = materialLength;
                       }
-                      materialLength.thisQuantity = parseInt((materialLength.thisQuantity || '0')) + parseInt(afterCalculateMaterial.thisQuantity);
-                      thisCalculatedMaterialLength.thisQuantity = parseInt((thisCalculatedMaterialLength.thisQuantity || '0')) + parseInt(afterCalculateMaterial.thisQuantity);
+		              var thisQuantity = parseInt(afterCalculateMaterial.thisQuantity);
+                      materialLength.thisQuantity = parseInt((materialLength.thisQuantity || '0')) + thisQuantity;
 
+                      thisCalculatedMaterialLength.thisQuantity = parseInt((thisCalculatedMaterialLength.thisQuantity || '0')) + thisQuantity;
+
+                      thisCalculatedMaterial.sumQuantity = (thisCalculatedMaterial.sumQuantity || 0) + thisQuantity;
 
                       calculatedWindowModel.materials['p' + afterCalculateMaterial.materialId] = calculated;
                       queueAfterCalculated.queueCalculatedMaterial['p' + afterCalculateMaterial.materialId] = thisCalculatedMaterial;
