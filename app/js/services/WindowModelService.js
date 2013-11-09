@@ -102,7 +102,7 @@
                               thisCaseName = thisCaseName + '( 有铜条 ) ';
                           }
                           thisCaseName = thisCaseName + ' ( ' + afterCalculate.windowModel.openNum + '开 )';
-                          var tempName = 'l' + afterCalculateMaterial.length + 'k' + afterCalculate.windowModel.openNum + 'i' + (afterCalculate.needObject.interHeight || 0);
+                          var tempName = 'l' + afterCalculateMaterial.length + 'k' + afterCalculate.windowModel.openNum + 'i' + (afterCalculate.needObject.interHeight || 0) + (afterCalculate.windowModel.haveCopperBar || 'false');
                           thisCalculatedMaterialLength = thisCalculatedMaterial.materialSizes[tempName] || {
                               needLength:afterCalculateMaterial.length,
                               materialId:afterCalculateMaterial.materialId,

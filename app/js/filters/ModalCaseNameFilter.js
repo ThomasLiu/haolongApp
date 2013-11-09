@@ -26,6 +26,7 @@ define([
           }else{
               return '';
           }
+          Console.groupEnd();
       }
   }];
   Console.groupEnd();

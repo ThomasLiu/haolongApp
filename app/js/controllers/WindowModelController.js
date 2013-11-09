@@ -1,4 +1,4 @@
-define(['Console'
+﻿define(['Console'
     , 'Underscore' // lib/underscore/underscore
     ], function (Console,_) {
     "use strict";
@@ -17,6 +17,7 @@ define(['Console'
              '窗型名'
             , '型号类别'
             , '是否有内孔'
+, '是否有铜条'
             , '窗型开数'
         ];
         $scope.getObject = function(object) {

@@ -391,14 +391,17 @@ body > .navbar .brand {
 .footer-links li {
     display: inline;
     padding: 0 2px;
-}
+}  
+
+
+.afterCalculate-section{font-size: 19px;}   
 
 
 .afterCalculate-section ul{
-    list-style: none outside none;
+    list-style: none outside none;   
 }
 .afterCalculate-section li span:first-child{
-    width: 100px;
+    width: 200px;
     text-align: right;
     font-weight: bold;
 
@@ -407,7 +410,7 @@ body > .navbar .brand {
     display:inline-block;
 }
 .afterCalculate-result{
-    width: 120px;
+    width: 170px;
 }
 
 .calculated-material{

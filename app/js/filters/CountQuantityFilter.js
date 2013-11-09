@@ -20,6 +20,7 @@ define([
           }else{
               return '';
           }
+          Console.groupEnd();
       }
   };
 

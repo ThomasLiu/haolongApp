@@ -36,7 +36,7 @@
                     单独计算</a>
 
                 <button type="button" class="btn" ng-click="notNowCalculate(needObject)">暂时记住，等下一次过算</button>
-                <button type="button" class="btn" ng-click="needObject = undefined;">清空</button>
+                <button type="button" class="btn" ng-click="needObject = undefined;newBall = undefined">清空</button>
 
             </form>
         </div>
@@ -56,7 +56,7 @@
                 [ <a href=""  ng-click="removeNotNowCalculate($index)">X</a> ]
             </li>
         </ol>
-        <label>共：{{newBall.queueNotNowCalculate | countQuantity }} 个</label>
+        <h3>共：{{newBall.queueNotNowCalculate | countQuantity }} 个</h3>
         <button type="button" class="btn" style="margin-left: 300px;" ng-click="calculate(newBall.queueNotNowCalculate)">计算全部</button>
         <hr>
     </section>
@@ -172,12 +172,16 @@
                 <span class="pull-right">{{newBall.createdDate}}</span>
             </h4>
             <dl class="pull-left" ng-repeat="(id, glass) in queueAfterCalculated.queueCalculatedGlass" style="margin-right: 60px;">
-                <dt>{{id | modalCaseName:'myGlasss'}}</dt>
+                <dt>{{id | modalCaseName:'myGlasss'}}
+                    <select class="input-small noprint" ng-model="glassColor[$index]" ng-options="i.caseName as i.caseName for i in queueColor"></select>
+                     <span style="margin-left: 20px;">{{glassColor[$index]}}</span>
+                </dt>
                 <dd class="inline" ng-repeat="item in glass">{{item.needLength}} X {{item.needWidth}} = {{item.thisQuantity}}
                     <span ng-show="needObject.showPrice" style="margin-left: 10px;">{{item.price | currency:"￥"}}</span></dd>
+                <dd class="inline" >总：{{glass | countArea}}</dd>
             </dl>
         </div>
-        <div class="clearfix" ng-class="{noprint: printPartBall}">
+        <div class="clearfix materialBall" ng-class="{noprint: printPartBall}">
             <h4>配件单
                 <a class="btn noprint" ng-click="printBall(3)"><i class="icon-print"></i></a>
                 <span style="padding-left: 30px;">{{newBall.client}} </span>

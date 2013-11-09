@@ -24,6 +24,8 @@
 
             $scope.queueGrain = GrainService.queue();
 
+            $scope.glassColor = new Array();
+
             $scope.removeNotNowCalculate = function(index){
                 $scope.newBall.queueNotNowCalculate.splice(index, 1);
             };
