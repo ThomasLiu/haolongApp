@@ -6,7 +6,15 @@ define([
   ,'text!templates/Ball.html'
   ,'text!templates/Color.html'
   ,'text!templates/Grain.html'
-],function(partTemplate,materialTemplate,windowModelTemplate,glassTemplate,ballTemplate,colorTemplate,grainTemplate){
+  ,'text!templates/ContactList.html'
+],function(partTemplate
+    ,materialTemplate
+    ,windowModelTemplate
+    ,glassTemplate
+    ,ballTemplate
+    ,colorTemplate
+    ,grainTemplate
+    ,contactListTemplate){
   return {
     windowModel: {
           title: '窗型管理'
@@ -49,6 +57,12 @@ define([
           , route: '/grain'
           , controller: 'grain'
           , template: grainTemplate
+      }
+      , contactList: {
+          title: '通讯录'
+          , route: '/contactList'
+          , controller: 'contactList'
+          , template: contactListTemplate
       }
   };
 })

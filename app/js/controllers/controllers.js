@@ -21,6 +21,7 @@ define([
   , 'controllers/BallController'
   , 'controllers/ColorController'
   , 'controllers/GrainController'
+  , 'controllers/ContactListController'
 ], function (Console, _, routes, app
     ,home
     ,part
@@ -34,7 +35,8 @@ define([
     ,afterCalculate
     ,ball
     ,color
-    ,grain) {
+    ,grain
+    ,contactList) {
   "use strict";
   Console.group("Entering controllers module.");
   Console.info("AppController", app);
@@ -53,6 +55,7 @@ define([
       ,ball:ball
       ,color:color
       ,grain:grain
+      ,contactList:contactList
   };
 
 
