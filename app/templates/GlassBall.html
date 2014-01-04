@@ -1,0 +1,36 @@
+﻿<header id="overview" class="jumbotron subhead">
+    <div class="container">
+        <h1>玻璃单管理</h1>
+        <p class="lead">玻璃单将可以在这里管理。</p>
+
+    </div>
+</header>
+<div class="container">
+    <h3>已入库的玻璃单
+        <input placeholder="通过客户名检索" ng-model="search.caseName" type="text">
+        <a class="btn btn-primary pull-right" href="#/glassBallDetail/">添加玻璃单</a>
+    </h3>
+    <table class="table">
+        <thead>
+        <tr>
+
+            <th ng-repeat="tableHead in queueHead">
+                {{tableHead}}
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="item in queue| filter:search:strict | orderBy:'createdDateTime':true">
+
+            <td>
+                <button type="button" class="btn" ng-click="removeObject(item)"><i class="icon-remove"></i>删除</button>
+                <a href="#/glassBallDetail/{{item.id}}">{{item.caseName}}</a></td>
+
+            <td>{{item.createdDate}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+

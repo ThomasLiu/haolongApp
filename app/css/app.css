@@ -425,3 +425,31 @@ body > .navbar .brand {
     width: 80px;
     display: inline-block;
 }
+.glass-ball-list{
+    list-style: none;
+}
+.glass-ball-list li{
+    float: left;
+    width: 250px;
+    line-height: 30px;
+}
+.glass-ball-list li .input-small{
+    width: 40px;
+    margin-bottom: 0;
+}
+.glass-ball-list li .input-small.item-count{
+    width: 35px;
+}
+.glass-ball-list-item .input-small{
+    border: none;
+    box-shadow: none;
+    padding-top: 0;
+}
+.container input.glass-ball-input{
+    font-weight: bolder;
+    border: none;
+    box-shadow: none;
+}
+.container h4 input.glass-ball-input{
+    font-size: 18px;
+}

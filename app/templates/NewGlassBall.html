@@ -1,0 +1,33 @@
+﻿<div class="container" style="margin-top: 60px;">
+    <section>
+        <h4>
+        <input class="glass-ball-input" type="text" placeholder="订单名" ng-model="willSaveObject.caseName">
+        <strong>共： {{willSaveObject.glasss | countGlassBall}} 块</strong>
+        <span class="pull-right">{{willSaveObject.createdDate}}</span>
+        </h4>
+    </section>
+    <section ng-repeat="glass in willSaveObject.glasss">
+        <input class="glass-ball-input" type="text" placeholder="玻璃名" ng-model="glass.caseName">
+        <strong>共： {{glass.countNum}} 块</strong>
+        <button type="button" class="btn noprint" ng-click="removeGlass($index)">删除</button>
+        <ul class="glass-ball-list clearfix">
+            <li class="glass-ball-list-item" ng-repeat="item in glass.list">
+                <input class="input-small" type="number" placeholder="长" ng-model="item.height">X
+                <input class="input-small" type="number" placeholder="宽" ng-model="item.width">=
+                <input class="input-small item-count" type="number" placeholder="个数" ng-model="item.countNum">
+                <button type="button" class="btn noprint" ng-click="removeItem($index,glass)">删除</button>
+            </li>
+            <li class="noprint">
+                <input class="input-small" type="number" placeholder="长" ng-model="glass.newItem.height">X
+                <input class="input-small" type="number" placeholder="宽" ng-model="glass.newItem.width">=
+                <input class="input-small" type="number" placeholder="个数" ng-model="glass.newItem.countNum">
+                <button type="button" class="btn" ng-click="addItem(glass)">添加</button>
+            </li>
+        </ul>
+    </section>
+    <section class="noprint">
+        <input type="text" placeholder="新玻璃名" ng-model="newGlass.caseName">
+        <button type="button" class="btn" ng-click="addGlass(newGlass)">添加</button>
+    </section>
+    <button type="button" class="btn noprint" ng-click="saveObject(willSaveObject)">保存玻璃单</button>
+</div>

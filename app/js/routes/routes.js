@@ -7,6 +7,7 @@ define([
   ,'text!templates/Color.html'
   ,'text!templates/Grain.html'
   ,'text!templates/ContactList.html'
+  ,'text!templates/GlassBall.html'
 ],function(partTemplate
     ,materialTemplate
     ,windowModelTemplate
@@ -14,7 +15,8 @@ define([
     ,ballTemplate
     ,colorTemplate
     ,grainTemplate
-    ,contactListTemplate){
+    ,contactListTemplate
+    ,glassBallTemplate){
   return {
     windowModel: {
           title: '窗型管理'
@@ -63,6 +65,12 @@ define([
           , route: '/contactList'
           , controller: 'contactList'
           , template: contactListTemplate
+      }
+      , contactList: {
+          title: '玻璃单'
+          , route: '/glassBall'
+          , controller: 'glassBall'
+          , template: glassBallTemplate
       }
   };
 })

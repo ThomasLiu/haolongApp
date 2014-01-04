@@ -22,6 +22,8 @@ define([
   , 'controllers/ColorController'
   , 'controllers/GrainController'
   , 'controllers/ContactListController'
+  , 'controllers/GlassBallController'
+  , 'controllers/NewGlassBallController'
 ], function (Console, _, routes, app
     ,home
     ,part
@@ -36,7 +38,9 @@ define([
     ,ball
     ,color
     ,grain
-    ,contactList) {
+    ,contactList
+    ,glassBall
+    ,newGlassBall) {
   "use strict";
   Console.group("Entering controllers module.");
   Console.info("AppController", app);
@@ -56,6 +60,8 @@ define([
       ,color:color
       ,grain:grain
       ,contactList:contactList
+      ,glassBall:glassBall
+      ,newGlassBall:newGlassBall
   };
 
 
@@ -89,6 +95,14 @@ define([
             , {
                 templateUrl: 'templates/Home.html'
                 , controller: home
+                , title: '浩龙下料管理系统'
+            }
+        );
+        $routeProvider.when(
+            '/glassBallDetail/:glassBallId'
+            , {
+                templateUrl: 'templates/NewGlassBall.html'
+                , controller: newGlassBall
                 , title: '浩龙下料管理系统'
             }
         );
